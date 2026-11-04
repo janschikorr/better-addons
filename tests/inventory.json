@@ -1,0 +1,1377 @@
+[
+ {
+  "folder": "Aegis_Forever_Instance_Journal",
+  "lua_files": 126,
+  "xml_files": 2,
+  "lua_kb": 4841,
+  "total_mb": 109.0,
+  "tocs": [
+   {
+    "file": "Aegis_Forever_Instance_Journal.toc",
+    "title": "Aegis Instance Journal",
+    "version": "0.38.0",
+    "interface": [
+     "16001"
+    ],
+    "author": "Aegis",
+    "depends": [],
+    "optional": [
+     "Baganator",
+     "Pawn",
+     "Syndicator"
+    ],
+    "saved_variables": [
+     "AegisJournalDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "ClassicUIForever",
+  "lua_files": 292,
+  "xml_files": 0,
+  "lua_kb": 3369,
+  "total_mb": 48.4,
+  "tocs": [
+   {
+    "file": "ClassicUIForever.toc",
+    "title": "ClassicUI Forever",
+    "version": "0.41.1",
+    "interface": [
+     "16001",
+     "120100",
+     "120105",
+     "120107"
+    ],
+    "author": "justawower",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "ForeverClassicUIDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "DialogueUI",
+  "lua_files": 105,
+  "xml_files": 14,
+  "lua_kb": 1589,
+  "total_mb": 11.3,
+  "tocs": [
+   {
+    "file": "DialogueUI.toc",
+    "title": "Dialogue UI",
+    "version": "1.0.7",
+    "interface": [
+     "120107",
+     "120105",
+     "50504",
+     "20506",
+     "11509",
+     "16001"
+    ],
+    "author": "Raenore, Peterodox",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "DialogueUI_DB",
+     "DialogueUI_Saves"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 6,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "ForeverDungeonJournal",
+  "lua_files": 59,
+  "xml_files": 1,
+  "lua_kb": 2816,
+  "total_mb": 43.0,
+  "tocs": [
+   {
+    "file": "ForeverDungeonJournal.toc",
+    "title": "DungeonJournal",
+    "version": "1.6.6",
+    "interface": [
+     "16001"
+    ],
+    "author": "Exehn",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "ForeverDungeonJournalDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "LegacyForever",
+  "lua_files": 39,
+  "xml_files": 2,
+  "lua_kb": 564,
+  "total_mb": 0.7,
+  "tocs": [
+   {
+    "file": "LegacyForever.toc",
+    "title": "Legacy Forever",
+    "version": "v1.0.12",
+    "interface": [
+     "16001"
+    ],
+    "author": "cjber",
+    "depends": [],
+    "optional": [
+     "AtlasLootClassic",
+     "Questie",
+     "QuestieDB",
+     "ShortestPathForever"
+    ],
+    "saved_variables": [
+     "LegacyForeverDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "GPL-3.0-or-later",
+    "other_fields": 4,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "MoveAny",
+  "lua_files": 73,
+  "xml_files": 3,
+  "lua_kb": 1627,
+  "total_mb": 5.2,
+  "tocs": [
+   {
+    "file": "MoveAny.toc",
+    "title": "MoveAny by D4KiR",
+    "version": "1.14.5",
+    "interface": [
+     "16001"
+    ],
+    "author": "D4KiR",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "MATAB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 13,
+    "better_addons": {}
+   },
+   {
+    "file": "MoveAny_Camelot.toc",
+    "title": "MoveAny by D4KiR",
+    "version": "1.14.5",
+    "interface": [
+     "16001"
+    ],
+    "author": "D4KiR",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "MATAB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 13,
+    "better_addons": {}
+   },
+   {
+    "file": "MoveAny_Cata.toc",
+    "title": "MoveAny by D4KiR",
+    "version": "1.14.5",
+    "interface": [
+     "40402"
+    ],
+    "author": "D4KiR",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "MATAB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 13,
+    "better_addons": {}
+   },
+   {
+    "file": "MoveAny_Mists.toc",
+    "title": "MoveAny by D4KiR",
+    "version": "1.14.5",
+    "interface": [
+     "50504"
+    ],
+    "author": "D4KiR",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "MATAB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 13,
+    "better_addons": {}
+   },
+   {
+    "file": "MoveAny_TBC.toc",
+    "title": "MoveAny by D4KiR",
+    "version": "1.14.5",
+    "interface": [
+     "20506"
+    ],
+    "author": "D4KiR",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "MATAB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 13,
+    "better_addons": {}
+   },
+   {
+    "file": "MoveAny_Vanilla.toc",
+    "title": "MoveAny by D4KiR",
+    "version": "1.14.5",
+    "interface": [
+     "11509"
+    ],
+    "author": "D4KiR",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "MATAB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 13,
+    "better_addons": {}
+   },
+   {
+    "file": "MoveAny_Wrath.toc",
+    "title": "MoveAny by D4KiR",
+    "version": "1.14.5",
+    "interface": [
+     "38002",
+     "30403"
+    ],
+    "author": "D4KiR",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "MATAB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 13,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "MuddyBoots",
+  "lua_files": 86,
+  "xml_files": 0,
+  "lua_kb": 1968,
+  "total_mb": 1.9,
+  "tocs": [
+   {
+    "file": "MuddyBoots.toc",
+    "title": "Muddy Boots",
+    "version": "0.1.2",
+    "interface": [
+     "16001"
+    ],
+    "author": "Mookz",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "MuddyBootsDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 2,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "OpenMap",
+  "lua_files": 90,
+  "xml_files": 8,
+  "lua_kb": 1880,
+  "total_mb": 275.8,
+  "tocs": [
+   {
+    "file": "OpenMap.toc",
+    "title": "OpenMap",
+    "version": "v0.7.5-beta",
+    "interface": [
+     "16001"
+    ],
+    "author": "OpenMap contributors",
+    "depends": [],
+    "optional": [
+     "BetterMaps",
+     "HiddenMaps",
+     "HighFidelityWorldMap",
+     "Leatrix_Maps",
+     "Magnify",
+     "Mapster",
+     "Questie"
+    ],
+    "saved_variables": [
+     "OpenMapDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "MIT (code); map art is Blizzard's",
+    "other_fields": 4,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "Overlord",
+  "lua_files": 59,
+  "xml_files": 0,
+  "lua_kb": 4334,
+  "total_mb": 5.0,
+  "tocs": [
+   {
+    "file": "Overlord.toc",
+    "title": "Overlord Forever",
+    "version": "2.1.0",
+    "interface": [
+     "16001"
+    ],
+    "author": "Troma",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "OverlordDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "All Rights Reserved",
+    "other_fields": 2,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "Questie",
+  "lua_files": 353,
+  "xml_files": 24,
+  "lua_kb": 6613,
+  "total_mb": 8.0,
+  "tocs": [
+   {
+    "file": "Questie.toc",
+    "title": "Questie game client not supported",
+    "version": "",
+    "interface": [
+     "00000"
+    ],
+    "author": "",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 0,
+    "better_addons": {}
+   },
+   {
+    "file": "Questie_Camelot.toc",
+    "title": "Questie v12.5.1",
+    "version": "12.5.1",
+    "interface": [
+     "16001"
+    ],
+    "author": "Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjmit/Dyaxler/Cheeq/TechnoHunter/Yttrium/Everyone else",
+    "depends": [],
+    "optional": [
+     "Ace3",
+     "CallbackHandler-1.0",
+     "HereBeDragons",
+     "Krowi_WorldMapButtons",
+     "LibDBIcon-1.0",
+     "LibDataBroker-1.1",
+     "LibSharedMedia-3.0",
+     "LibStub",
+     "LibUIDropDownMenu",
+     "QuestieDB",
+     "QuestieTrace"
+    ],
+    "saved_variables": [
+     "QuestieConfig",
+     "QuestieProfilerEnabled"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 16,
+    "better_addons": {}
+   },
+   {
+    "file": "Questie_Forever.toc",
+    "title": "Questie v12.5.1",
+    "version": "12.5.1",
+    "interface": [
+     "16001"
+    ],
+    "author": "Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjmit/Dyaxler/Cheeq/TechnoHunter/Yttrium/Everyone else",
+    "depends": [],
+    "optional": [
+     "Ace3",
+     "CallbackHandler-1.0",
+     "HereBeDragons",
+     "Krowi_WorldMapButtons",
+     "LibDBIcon-1.0",
+     "LibDataBroker-1.1",
+     "LibSharedMedia-3.0",
+     "LibStub",
+     "LibUIDropDownMenu",
+     "QuestieDB",
+     "QuestieTrace"
+    ],
+    "saved_variables": [
+     "QuestieConfig",
+     "QuestieProfilerEnabled"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 16,
+    "better_addons": {}
+   },
+   {
+    "file": "Questie_Mists.toc",
+    "title": "Questie v12.5.1",
+    "version": "12.5.1",
+    "interface": [
+     "50503",
+     "50504"
+    ],
+    "author": "Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjmit/Dyaxler/Cheeq/TechnoHunter/Yttrium/Everyone else",
+    "depends": [],
+    "optional": [
+     "Ace3",
+     "CallbackHandler-1.0",
+     "HereBeDragons",
+     "Krowi_WorldMapButtons",
+     "LibDBIcon-1.0",
+     "LibDataBroker-1.1",
+     "LibSharedMedia-3.0",
+     "LibStub",
+     "LibUIDropDownMenu",
+     "QuestieDB",
+     "QuestieTrace"
+    ],
+    "saved_variables": [
+     "QuestieConfig",
+     "QuestieProfilerEnabled"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 16,
+    "better_addons": {}
+   },
+   {
+    "file": "Questie_TBC.toc",
+    "title": "Questie v12.5.1",
+    "version": "12.5.1",
+    "interface": [
+     "20506"
+    ],
+    "author": "Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjmit/Dyaxler/Cheeq/TechnoHunter/Yttrium/Everyone else",
+    "depends": [],
+    "optional": [
+     "Ace3",
+     "CallbackHandler-1.0",
+     "HereBeDragons",
+     "Krowi_WorldMapButtons",
+     "LibDBIcon-1.0",
+     "LibDataBroker-1.1",
+     "LibSharedMedia-3.0",
+     "LibStub",
+     "LibUIDropDownMenu",
+     "QuestieDB",
+     "QuestieTrace"
+    ],
+    "saved_variables": [
+     "QuestieConfig",
+     "QuestieProfilerEnabled"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 16,
+    "better_addons": {}
+   },
+   {
+    "file": "Questie_Vanilla.toc",
+    "title": "Questie v12.5.1",
+    "version": "12.5.1",
+    "interface": [
+     "11508",
+     "11509"
+    ],
+    "author": "Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjmit/Dyaxler/Cheeq/TechnoHunter/Yttrium/Everyone else",
+    "depends": [],
+    "optional": [
+     "Ace3",
+     "CallbackHandler-1.0",
+     "HereBeDragons",
+     "Krowi_WorldMapButtons",
+     "LibDBIcon-1.0",
+     "LibDataBroker-1.1",
+     "LibSharedMedia-3.0",
+     "LibStub",
+     "LibUIDropDownMenu",
+     "QuestieDB",
+     "QuestieTrace"
+    ],
+    "saved_variables": [
+     "QuestieConfig",
+     "QuestieProfilerEnabled"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 16,
+    "better_addons": {}
+   },
+   {
+    "file": "Questie_Wrath.toc",
+    "title": "Questie v12.5.1",
+    "version": "12.5.1",
+    "interface": [
+     "38002"
+    ],
+    "author": "Aero/Logon/Muehe/TheCrux(BreakBB)/Drejjmit/Dyaxler/Cheeq/TechnoHunter/Yttrium/Everyone else",
+    "depends": [],
+    "optional": [
+     "Ace3",
+     "CallbackHandler-1.0",
+     "HereBeDragons",
+     "Krowi_WorldMapButtons",
+     "LibDBIcon-1.0",
+     "LibDataBroker-1.1",
+     "LibSharedMedia-3.0",
+     "LibStub",
+     "LibUIDropDownMenu",
+     "QuestieDB",
+     "QuestieTrace"
+    ],
+    "saved_variables": [
+     "QuestieConfig",
+     "QuestieProfilerEnabled"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 16,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "QuestieDB",
+  "lua_files": 58,
+  "xml_files": 0,
+  "lua_kb": 1520,
+  "total_mb": 30.1,
+  "tocs": [
+   {
+    "file": "QuestieDB_Camelot.toc",
+    "title": "QuestieDB",
+    "version": "1.0.10",
+    "interface": [
+     "16001"
+    ],
+    "author": "Code: Logonz Data: Muehe/TheCrux(BreakBB)/Drejjmit/Dyaxler/Cheeq/TechnoHunter/Yttrium/Everyone else",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 115475,
+    "better_addons": {}
+   },
+   {
+    "file": "QuestieDB_Forever.toc",
+    "title": "QuestieDB",
+    "version": "1.0.10",
+    "interface": [
+     "16001"
+    ],
+    "author": "Code: Logonz Data: Muehe/TheCrux(BreakBB)/Drejjmit/Dyaxler/Cheeq/TechnoHunter/Yttrium/Everyone else",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 115475,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "QuestieTrace",
+  "lua_files": 38,
+  "xml_files": 2,
+  "lua_kb": 414,
+  "total_mb": 0.5,
+  "tocs": [
+   {
+    "file": "QuestieTrace-Camelot.toc",
+    "title": "QuestieTrace",
+    "version": "1.8.0",
+    "interface": [
+     "16001"
+    ],
+    "author": "Logon/TheCrux(BreakBB)",
+    "depends": [],
+    "optional": [
+     "LibDeflate",
+     "LibStub"
+    ],
+    "saved_variables": [
+     "QuestieTrace",
+     "QuestieTraceDumps"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 12,
+    "better_addons": {}
+   },
+   {
+    "file": "QuestieTrace-Classic.toc",
+    "title": "QuestieTrace",
+    "version": "1.8.0",
+    "interface": [
+     "11509",
+     "20506",
+     "38002",
+     "50504"
+    ],
+    "author": "Logon/TheCrux(BreakBB)",
+    "depends": [],
+    "optional": [
+     "LibDeflate",
+     "LibStub"
+    ],
+    "saved_variables": [
+     "QuestieTrace",
+     "QuestieTraceDumps"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 12,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "ShortestPathForever",
+  "lua_files": 111,
+  "xml_files": 2,
+  "lua_kb": 12903,
+  "total_mb": 12.8,
+  "tocs": [
+   {
+    "file": "ShortestPathForever.toc",
+    "title": "Shortest Path Forever",
+    "version": "v1.22.26",
+    "interface": [
+     "16001"
+    ],
+    "author": "cjber",
+    "depends": [],
+    "optional": [
+     "QuestieDB",
+     "RXPGuides",
+     "TweaksForever"
+    ],
+    "saved_variables": [
+     "ShortestPathForeverDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "GPL-3.0-or-later",
+    "other_fields": 3,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "SkillUpForever",
+  "lua_files": 50,
+  "xml_files": 1,
+  "lua_kb": 1686,
+  "total_mb": 1.8,
+  "tocs": [
+   {
+    "file": "SkillUpForever.toc",
+    "title": "SkillUp Forever",
+    "version": "v1.0.9",
+    "interface": [
+     "16001"
+    ],
+    "author": "cjber",
+    "depends": [],
+    "optional": [
+     "AtlasLootClassic",
+     "Auctionator",
+     "Questie",
+     "QuestieDB",
+     "ShortestPathForever",
+     "Syndicator",
+     "TomTom"
+    ],
+    "saved_variables": [
+     "SkillUpForeverDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "GPL-3.0-or-later",
+    "other_fields": 3,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "Spoken",
+  "lua_files": 54,
+  "xml_files": 10,
+  "lua_kb": 1186,
+  "total_mb": 4.3,
+  "tocs": [
+   {
+    "file": "Spoken.toc",
+    "title": "Spoken",
+    "version": "3.8.0",
+    "interface": [
+     "16001"
+    ],
+    "author": "",
+    "depends": [],
+    "optional": [
+     "DialogueUI",
+     "EllesmereUI"
+    ],
+    "saved_variables": [
+     "SpokenSettings"
+    ],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   },
+   {
+    "file": "Spoken_TBC.toc",
+    "title": "Spoken",
+    "version": "3.8.0",
+    "interface": [
+     "20506"
+    ],
+    "author": "",
+    "depends": [],
+    "optional": [
+     "DialogueUI"
+    ],
+    "saved_variables": [
+     "SpokenSettings"
+    ],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   },
+   {
+    "file": "Spoken_Vanilla.toc",
+    "title": "Spoken",
+    "version": "3.8.0",
+    "interface": [
+     "11509"
+    ],
+    "author": "",
+    "depends": [],
+    "optional": [
+     "DialogueUI"
+    ],
+    "saved_variables": [
+     "SpokenSettings"
+    ],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "Spoken_Bosses",
+  "lua_files": 19,
+  "xml_files": 0,
+  "lua_kb": 1805,
+  "total_mb": 1.8,
+  "tocs": [
+   {
+    "file": "Spoken_Bosses.toc",
+    "title": "Spoken Bosses",
+    "version": "3.8.0",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "Nucabe",
+    "depends": [
+     "Spoken"
+    ],
+    "optional": [
+     "SpokenBossesAudio"
+    ],
+    "saved_variables": [
+     "SpokenBossesSettings"
+    ],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "Addon code MIT. Boss names are Blizzard's, from the game's own tables.",
+    "other_fields": 2,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "Spoken_Places",
+  "lua_files": 55,
+  "xml_files": 0,
+  "lua_kb": 7870,
+  "total_mb": 88.5,
+  "tocs": [
+   {
+    "file": "Spoken_Places.toc",
+    "title": "Spoken Places",
+    "version": "3.8.0",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "rusty",
+    "depends": [
+     "Spoken"
+    ],
+    "optional": [
+     "SpokenPlacesAudio",
+     "ZoneLoreAudio",
+     "ZoneLoreAudio64"
+    ],
+    "saved_variables": [
+     "SpokenPlacesSettings",
+     "SpokenZonesSettings"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "Addon code MIT. Zone lore text from warcraft.wiki.gg, CC BY-SA 4.0.",
+    "other_fields": 4,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "Spoken_Quests",
+  "lua_files": 97,
+  "xml_files": 18,
+  "lua_kb": 22748,
+  "total_mb": 22.5,
+  "tocs": [
+   {
+    "file": "Spoken_Quests.toc",
+    "title": "Spoken Quests",
+    "version": "3.8.0",
+    "interface": [
+     "16001"
+    ],
+    "author": "",
+    "depends": [
+     "Spoken"
+    ],
+    "optional": [
+     "DialogueUI",
+     "Immersion"
+    ],
+    "saved_variables": [
+     "SpokenQuestsSettings"
+    ],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   },
+   {
+    "file": "Spoken_Quests_TBC.toc",
+    "title": "Spoken Quests",
+    "version": "3.8.0",
+    "interface": [
+     "20506"
+    ],
+    "author": "",
+    "depends": [
+     "Spoken"
+    ],
+    "optional": [
+     "DialogueUI",
+     "Immersion"
+    ],
+    "saved_variables": [
+     "SpokenQuestsSettings"
+    ],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   },
+   {
+    "file": "Spoken_Quests_Vanilla.toc",
+    "title": "Spoken Quests",
+    "version": "3.8.0",
+    "interface": [
+     "11509"
+    ],
+    "author": "",
+    "depends": [
+     "Spoken"
+    ],
+    "optional": [
+     "DialogueUI",
+     "Immersion"
+    ],
+    "saved_variables": [
+     "SpokenQuestsSettings"
+    ],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "Spoken_Readables",
+  "lua_files": 26,
+  "xml_files": 0,
+  "lua_kb": 804,
+  "total_mb": 0.8,
+  "tocs": [
+   {
+    "file": "Spoken_Readables.toc",
+    "title": "Spoken Readables",
+    "version": "3.8.0",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "rusty",
+    "depends": [
+     "Spoken"
+    ],
+    "optional": [
+     "SpokenReadablesAudio"
+    ],
+    "saved_variables": [
+     "SpokenReadablesSettings",
+     "SpokenBooksSettings"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "Addon code MIT. Book text is Blizzard's, extracted from the game.",
+    "other_fields": 2,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "SpokenAll_deDE",
+  "lua_files": 1,
+  "xml_files": 0,
+  "lua_kb": 0,
+  "total_mb": 0.0,
+  "tocs": [
+   {
+    "file": "SpokenAll_deDE.toc",
+    "title": "Spoken: German",
+    "version": "1.1.0",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 2,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "SpokenBossesAudio_deDE",
+  "lua_files": 1,
+  "xml_files": 0,
+  "lua_kb": 152,
+  "total_mb": 162.8,
+  "tocs": [
+   {
+    "file": "SpokenBossesAudio_deDE.toc",
+    "title": "Spoken German Audio: Bosses",
+    "version": "1.0.0",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "rusty",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "Audio generated with ElevenLabs from boss lore text.",
+    "other_fields": 6,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "SpokenContributions",
+  "lua_files": 0,
+  "xml_files": 0,
+  "lua_kb": 0,
+  "total_mb": 0.0,
+  "tocs": [
+   {
+    "file": "SpokenContributions.toc",
+    "title": "Spoken Contributions",
+    "version": "3.8.0",
+    "interface": [
+     "11509",
+     "20506",
+     "30403",
+     "16001"
+    ],
+    "author": "",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [
+     "SpokenContributionsDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 2,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "SpokenPlacesAudio_deDE",
+  "lua_files": 1,
+  "xml_files": 0,
+  "lua_kb": 345,
+  "total_mb": 367.9,
+  "tocs": [
+   {
+    "file": "SpokenPlacesAudio_deDE.toc",
+    "title": "Spoken German Audio: Places",
+    "version": "2.2.0",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "rusty",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "Audio generated with ElevenLabs from warcraft.wiki.gg lore text (CC BY-SA 4.0).",
+    "other_fields": 6,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "SpokenQuestsAudioAlliance_deDE",
+  "lua_files": 27,
+  "xml_files": 0,
+  "lua_kb": 4968,
+  "total_mb": 445.8,
+  "tocs": [
+   {
+    "file": "SpokenQuestsAudioAlliance_deDE.toc",
+    "title": "Spoken German Audio: Quests - Alliance",
+    "version": "1.1.0",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": true,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 7,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "SpokenQuestsAudioGossip_deDE",
+  "lua_files": 29,
+  "xml_files": 0,
+  "lua_kb": 6987,
+  "total_mb": 412.4,
+  "tocs": [
+   {
+    "file": "SpokenQuestsAudioGossip_deDE.toc",
+    "title": "Spoken German Audio: Gossip",
+    "version": "1.1.0",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": true,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 7,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "SpokenQuestsAudioHorde_deDE",
+  "lua_files": 27,
+  "xml_files": 0,
+  "lua_kb": 4954,
+  "total_mb": 406.3,
+  "tocs": [
+   {
+    "file": "SpokenQuestsAudioHorde_deDE.toc",
+    "title": "Spoken German Audio: Quests - Horde",
+    "version": "1.1.0",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": true,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 7,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "SpokenQuestsAudioShared_deDE",
+  "lua_files": 27,
+  "xml_files": 0,
+  "lua_kb": 4956,
+  "total_mb": 338.0,
+  "tocs": [
+   {
+    "file": "SpokenQuestsAudioShared_deDE.toc",
+    "title": "Spoken German Audio: Quests - Shared",
+    "version": "1.1.0",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": true,
+    "part_of": "Spoken",
+    "licence": "",
+    "other_fields": 7,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "SpokenReadablesAudio_deDE",
+  "lua_files": 1,
+  "xml_files": 0,
+  "lua_kb": 596,
+  "total_mb": 495.6,
+  "tocs": [
+   {
+    "file": "SpokenReadablesAudio_deDE.toc",
+    "title": "Spoken German Audio: Readables",
+    "version": "2.1.1",
+    "interface": [
+     "11509",
+     "20506",
+     "16001"
+    ],
+    "author": "rusty",
+    "depends": [],
+    "optional": [],
+    "saved_variables": [],
+    "load_on_demand": false,
+    "part_of": "Spoken",
+    "licence": "Audio generated with ElevenLabs from book text extracted from the game.",
+    "other_fields": 2,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "WarEffortScout",
+  "lua_files": 73,
+  "xml_files": 1,
+  "lua_kb": 2209,
+  "total_mb": 6.6,
+  "tocs": [
+   {
+    "file": "WarEffortScout.toc",
+    "title": "War Effort",
+    "version": "1.6.0",
+    "interface": [
+     "16001"
+    ],
+    "author": "Poutine Italienne",
+    "depends": [],
+    "optional": [
+     "Overlord"
+    ],
+    "saved_variables": [
+     "WarEffortScoutDB"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   }
+  ]
+ },
+ {
+  "folder": "WhatsTraining",
+  "lua_files": 126,
+  "xml_files": 6,
+  "lua_kb": 1611,
+  "total_mb": 1.9,
+  "tocs": [
+   {
+    "file": "WhatsTraining.toc",
+    "title": "What's Training?",
+    "version": "11.0.0",
+    "interface": [
+     "20506",
+     "16001",
+     "11509"
+    ],
+    "author": "Sveng",
+    "depends": [],
+    "optional": [
+     "ClassTrainerPlusForever",
+     "EllesmereUI",
+     "EllesmereUIBlizzardSkin",
+     "TomTom",
+     "[AllowLoadGameType",
+     "camelot][ExcludeLoadGameType",
+     "classic]"
+    ],
+    "saved_variables": [
+     "WT_WeaponGrouping",
+     "WT_ShowKnownWeaponSkills",
+     "WT_SpellDisplay",
+     "WT_SideBySide",
+     "WT_ScrollTwoPages",
+     "WT_FloatingFramePoint",
+     "WT_WaypointProvider",
+     "WT_ProfessionTabPosition",
+     "[AllowLoadGameType",
+     "camelot][ExcludeLoadGameType",
+     "classic]"
+    ],
+    "load_on_demand": false,
+    "part_of": "",
+    "licence": "",
+    "other_fields": 3,
+    "better_addons": {}
+   }
+  ]
+ }
+]
