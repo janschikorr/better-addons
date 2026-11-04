@@ -1,0 +1,47 @@
+# Hand-written manifest, phase 2, format 2. Read against QuestieDB 1.0.10
+# (QuestieDB_Forever.toc of two).
+#
+# A data addon with no interface of its own: a public read API, a schema, and a
+# corrections mechanism other addons can register into. "Questie is the first
+# consumer, but nothing here assumes it" (src/api.lua:6).
+format: 2
+addon: QuestieDB
+toc: QuestieDB_Forever.toc
+versions: ">=1.0.10"
+interface: [16001]
+title: QuestieDB
+
+provides:
+  - slot: data.quests
+    aspect: content
+    via: bundled
+    kind: add
+    source: "QuestieDB/src/api.lua:3 the public surface: read entity fields, discover the schema"
+    reason: >
+      Named source and licence are in the .toc author field, and the data is
+      generated rather than copied by hand (X-Mode: baked, X-BUILD-COMMIT).
+      This is the shared data package the quality guide asks for, rather than a
+      database copied into one addon.
+
+  - slot: questiedb:api.query
+    aspect: content
+    kind: add
+    source: "QuestieDB/src/api.lua:9 LibQuestieDB"
+    note: >
+      Entity reads, schema discovery, corrections registration and version
+      detection, all through this one file.
+
+unknown:
+  - >
+    QuestieDB stores its whole database inside .toc metadata: tens of thousands
+    of base64 '## X-Quest-<id>-<field>' lines, declared as X-Mode: baked. That
+    is legitimate - TOC fields are readable without loading the addon - but it
+    means a tool reading .toc files for Better Addons fields will read 14 MB of
+    data per file by accident, and any manifest scanner needs to tolerate it. A
+    note in the spec would help more than a field.
+  - >
+    It carries its own compatibility contract, X-Contract-Version: 4, and can
+    detect an incompatible consumer through api.lua alone. That is the same idea
+    as this format's own 'format' field, invented independently. Where an addon
+    already versions its interface this way, a manifest should be able to point
+    at that contract instead of restating it - otherwise the two can disagree.

@@ -1,0 +1,173 @@
+# Hand-written manifest, phase 2, format 2. Read against Questie v12.5.1,
+# Questie_Forever.toc (the Forever .toc of seven).
+#
+# Note which .toc this is. Questie.toc is a deliberate placeholder - title
+# "game client not supported", Interface 00000 - that exists to refuse to load
+# on unsupported clients. A manifest for it would describe an addon that does
+# nothing.
+format: 2
+addon: Questie
+toc: Questie_Forever.toc
+versions: ">=12.5.0"
+interface: [16001]
+title: Questie
+notes: >
+  The quest helper. Supplies its own tracker frame and suppresses the native
+  one, draws map and minimap pins through its own renamed copy of
+  HereBeDragons, adds tooltip lines and nameplate icons, and can accept and
+  complete quests automatically.
+
+provides:
+  - slot: quest.tracker
+    aspect: content
+    via: replace-frame
+    kind: replace
+    optional: true
+    module: trackerEnabled
+    source: "Questie/Modules/Tracker/TrackerBaseFrame.lua:33 CreateFrame(\"Frame\", \"Questie_BaseFrame\", UIParent)"
+    reason: >
+      Its own frame, and the native tracker is kept hidden by suppressing later
+      OnShow calls rather than by reparenting - reparenting a protected frame
+      would taint it on Forever (Modules/QuestieCompat.lua:397). ClassicUI
+      Forever also replaces this slot's content, so the two are a conflict.
+
+  - slot: map.pins
+    aspect: content
+    via: HereBeDragonsQuestie
+    kind: add
+    optional: true
+    module: enableMapIcons
+    source: "Questie/Modules/Map/QuestieMap.lua:349 HBDPins:AddWorldMapIconMap"
+    reason: >
+      Not the shared HereBeDragons: Questie embeds a renamed copy,
+      HereBeDragonsQuestie-2.0, so its pin pool and template are its own
+      (QuestieMap.lua:53-54). That makes it a different way from
+      map.pins=HereBeDragons, and the two do not contend for the same pool.
+
+  - slot: minimap.pins
+    aspect: content
+    via: HereBeDragonsQuestie
+    kind: add
+    optional: true
+    module: enableMiniMapIcons
+    source: "Questie/Modules/Map/QuestieMap.lua:368 HBDPins:AddMinimapIconMap"
+
+  - slot: minimap.button
+    aspect: content
+    via: LibDBIcon
+    kind: add
+    source: "Questie/Modules/MinimapIcon.lua:92 _LibDBIcon:Register(\"Questie\", ...)"
+
+  - slot: map.filter
+    aspect: content
+    via: native
+    kind: add
+    source: "Questie/Modules/WorldMapButton/WorldMapButton.lua:75"
+    note: A button on the world map frame, with its own tooltip.
+
+  - slot: tooltip.lines
+    aspect: content
+    via: native
+    kind: add
+    source: "Questie/Modules/Tooltips/TooltipHandler.lua:1"
+
+  - slot: ui.nameplates
+    aspect: content
+    via: native
+    kind: add
+    optional: true
+    module: nameplateEnabled
+    source: "Questie/Modules/QuestieNameplate.lua:2 QuestieNameplate"
+    reason: >
+      Quest icons on nameplates, which is content added to them. ClassicUI
+      Forever restyles nameplates (aspect style), so the two are compatible -
+      this is the aspect axis doing its job.
+
+  - slot: auto.quest.accept
+    aspect: behaviour
+    via: native
+    kind: add
+    optional: true
+    module: autoAccept
+    source: "Questie/Modules/Auto/AutoQuesting.lua:16 Questie.db.profile.autoAccept.enabled"
+
+  - slot: auto.quest.turnin
+    aspect: behaviour
+    via: native
+    kind: add
+    optional: true
+    module: autocomplete
+    source: "Questie/Modules/Options/QuestieOptionsDefaults.lua:142 autocomplete = false"
+
+  - slot: audio.sound
+    aspect: content
+    via: native
+    kind: add
+    source: "Questie/Modules/Sounds.lua:1"
+
+  - slot: data.quests
+    aspect: content
+    via: bundled
+    kind: add
+    source: "Questie/Database/QuestieDB.lua:1"
+    note: >
+      The database itself ships as the separate QuestieDB addon; this entry is
+      Questie offering the queried data onward.
+
+  # Slots other addons use. OpenMap and Legacy Forever both read these.
+  - slot: questie:db.query
+    aspect: content
+    kind: add
+    source: "Questie/Modules/QuestieInit.lua:1 QuestieLoader:ImportModule(\"QuestieDB\")"
+    reason: >
+      OpenMap imports QuestieDB through QuestieLoader for dungeon quests and
+      townsfolk (OpenMap/Map/Dungeons.lua:1334), so this is a real integration
+      point even though Questie does not call it an API.
+
+depends:
+  - addon: QuestieDB
+    note: The database Questie consumes; shipped as its own addon.
+    source: "Questie/Questie_Forever.toc:21 OptionalDeps lists it, but Questie has no data without it"
+
+recommends:
+  - addon: QuestieTrace
+    source: "Questie/Questie_Forever.toc:21 OptionalDeps"
+  - addon: HereBeDragons
+    note: Only the renamed embedded copy is required; the shared library is not.
+    source: "Questie/Modules/Map/QuestieMap.lua:53"
+
+modules:
+  quest.tracker:
+    title: Questie tracker
+    default: true
+  map.pins:
+    title: Map icons
+    default: true
+  minimap.pins:
+    title: Minimap icons
+    default: true
+  ui.nameplates:
+    title: Nameplate quest icons
+    default: true
+  auto.quest.accept:
+    title: Accept quests automatically
+    default: false
+  auto.quest.turnin:
+    title: Complete quests automatically
+    default: false
+
+unknown:
+  - >
+    Embedded, renamed library copies are a way, a dependency and a quality
+    question at once, and the format only captures the first. Questie ships
+    HereBeDragonsQuestie-2.0, a renamed HereBeDragons, so it never contends
+    with another addon's copy. Recording it as via: HereBeDragonsQuestie gives
+    the right verdict, but nothing states that this is HereBeDragons 2.0 under
+    another name - so a tool cannot tell that Questie satisfies a
+    'Depends: HereBeDragons' from a third addon, nor that the embedded copy
+    needs updating when the upstream library does.
+  - >
+    Questie.toc exists to refuse to load (title "game client not supported",
+    Interface 00000). "One manifest per .toc" would ask for a manifest of an
+    addon that deliberately does nothing. Skipped here, but a tool scanning a
+    folder has no way to know that it should skip it.

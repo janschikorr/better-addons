@@ -1,0 +1,49 @@
+# Hand-written manifest, phase 2, format 2. Read against War Effort 1.6.0.
+format: 2
+addon: WarEffortScout
+toc: WarEffortScout.toc
+versions: ">=1.6.0"
+interface: [16001]
+title: War Effort
+notes: World PvP radar; shares enemy raid sightings with the guild and shows them as heat zones.
+
+provides:
+  - slot: map.pins
+    aspect: content
+    via: native
+    kind: add
+    source: "WarEffortScout/MapPins.lua:2 native map canvas (data provider + pin template from MapPins.xml)"
+    reason: >
+      Redraws at most twice a second and only while the map is shown. It uses
+      the native data provider, which is the point of interest below.
+
+  - slot: minimap.pins
+    aspect: content
+    via: custom-overlay
+    kind: add
+    source: "WarEffortScout/MinimapEdge.lua:2 enemy groups on the minimap, on your layer"
+    note: >
+      Inside the visible area a glow at the group's position; further out a
+      direction marker on the minimap's edge for the three nearest.
+
+  - slot: minimap.button
+    aspect: content
+    via: native
+    kind: add
+    source: "WarEffortScout/MinimapButtonContent.lua:1"
+
+unknown:
+  - >
+    Two addons in this test set make opposite technical choices at the same
+    place, and the format records both as merely different ways. War Effort adds
+    a native map canvas data provider (MapPins.lua:2). Legacy Forever
+    deliberately does not, because a data provider puts addon values into the
+    secure walk that Forever's gamepad cursor performs every frame, tainting its
+    later protected calls (LegacyForever/UI/MapCanvas.lua:5-13). Overlord avoids
+    reading WorldMapFrame.mapID for the same family of reasons
+    (Overlord/MapMarkers.lua:3). Either Legacy Forever is being over-careful or
+    War Effort has a latent taint bug. The format cannot say which, and
+    map.pins=native next to map.pins=custom-overlay reads as a free choice.
+    This belongs in the quality guide and in phase 7 as a concrete test: with a
+    gamepad active and War Effort loaded, does the world map's gamepad cursor
+    still work?

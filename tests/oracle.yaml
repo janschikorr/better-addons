@@ -97,9 +97,21 @@ pairs:
     result: null
 
   - pair: [OpenMap, Overlord_Forever]
-    verdict: open
-    why: Depends on how Overlord places its pins.
-    observe: Fronts and conquest circles on the OpenMap canvas.
+    verdict: compatible
+    risk: layering
+    why: >
+      Settled by reading the code: Overlord draws its zone circles as its own
+      overlays on a visible layer (Overlord/MapMarkers.lua:1), and OpenMap's
+      map.pins is additive, so the rules say compatible. But OpenMap lifts
+      foreign overlays above its stitched artwork one addon at a time, by name,
+      and Overlord is not in that list (OpenMap/Map/Compat.lua:34-140). The
+      prediction is therefore compatible with a specific visual risk: the
+      circles may be drawn underneath the stitched art and simply not show.
+    observe: >
+      With stitching ON: are the front circles visible at all? With stitching
+      OFF (a dungeon or battleground map): are they visible there? If they show
+      only with stitching off, the rules were right and the verdict is still
+      wrong in practice - which is the most useful thing this test can find.
     result: null
 
   - pair: [OpenMap, DFL_DungeonJournal]
@@ -115,9 +127,16 @@ pairs:
     result: null
 
   - pair: [Questie, ShortestPathForever]
-    verdict: open
-    why: Both write into the objective tracker.
-    observe: Both sets of lines present in the tracker, nothing hidden.
+    verdict: compatible
+    why: >
+      Settled by reading the code. Questie supplies its own tracker frame,
+      Questie_BaseFrame (Modules/Tracker/TrackerBaseFrame.lua:33), while
+      Shortest Path adds a block to its own column and reads where Questie's
+      list sits in order to keep clear of it (UI/TrackerQuestie.lua). Different
+      frames, one of them deliberately yielding space.
+    observe: >
+      Both sets of lines visible, neither covering the other, after dragging
+      Questie's tracker to a new position and reloading.
     result: null
 
   - pair: [Questie, DFL_DungeonJournal]
@@ -162,8 +181,35 @@ pairs:
     observe: Skill-up values and sidebar visible.
     result: null
 
+  - pair: [Questie, ClassicUI_Forever]
+    verdict: conflict
+    why: >
+      Found by writing the manifests, not predicted in the original plan. Both
+      replace the content of quest.tracker: Questie with Questie_BaseFrame
+      (Modules/Tracker/TrackerBaseFrame.lua:33) and ClassicUI with
+      ForeverClassicUIQuestWatch (Art/ThemeParts.lua:90). Both default to on
+      (Questie trackerEnabled, ClassicUI themePartQuestTracker), so this fires
+      on a fresh install of the pair.
+    observe: >
+      Which tracker is visible, whether the other is empty or hidden, and
+      whether quest lines appear in only one of them.
+    result: null
+
 # Phase 7 step 1 is not a pair but a precondition:
 preconditions:
+  - name: gamepad cursor survives a native map data provider
+    why: >
+      War Effort adds a native map canvas data provider
+      (WarEffortScout/MapPins.lua:2). Legacy Forever deliberately does not,
+      because addon values in the gamepad cursor's secure walk taint its later
+      protected calls (LegacyForever/UI/MapCanvas.lua:5-13). One of the two is
+      wrong about the risk, and the format cannot decide it.
+    observe: >
+      With a gamepad active and War Effort loaded, open the world map and use
+      the gamepad cursor over pins. If it stops working, Legacy Forever's
+      caution is justified and this becomes a quality guide rule with teeth.
+    result: null
+
   - name: saved variables survive logout
     why: >
       A bug seen in the beta. It decides whether the checker addon can persist

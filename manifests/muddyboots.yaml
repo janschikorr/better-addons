@@ -1,0 +1,36 @@
+# Hand-written manifest, phase 2, format 2. Read against Muddy Boots 0.1.2.
+format: 2
+addon: MuddyBoots
+toc: MuddyBoots.toc
+versions: ">=0.1.2"
+interface: [16001]
+title: Muddy Boots
+notes: Records the player's journey and replays it on the world map.
+
+provides:
+  - slot: map.pins
+    aspect: content
+    via: custom-overlay
+    kind: add
+    source: "MuddyBoots/UI/Map/Pins.lua:2 pooled frames on one layer above Blizzard's pins"
+    note: >
+      Level-ups, deaths, PvP fights, loot, mounts, dungeons and world bosses,
+      kept at the same screen size at every zoom.
+
+  - slot: map.route
+    aspect: content
+    via: custom-overlay
+    kind: add
+    source: "MuddyBoots/UI/Map/Pins.lua:6 trip icons on their arcs"
+
+unknown:
+  - >
+    Four addons in this bundle alone draw pins on the world map on frames of
+    their own (this one, Overlord, Shortest Path Forever, Legacy Forever), each
+    layering above Blizzard's pins by its own arithmetic. They do not conflict
+    by the rules, and probably do not in practice - but nothing in the format
+    says how many overlays one canvas can carry, and OpenMap has to lift foreign
+    pins above its artwork one addon at a time, by name
+    (OpenMap/Map/Compat.lua:56-129). The slot model calls map.pins additive and
+    stops there. Whether a shared layering convention is needed is a design
+    question for the project, not a missing field.

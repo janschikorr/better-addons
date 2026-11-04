@@ -1,0 +1,83 @@
+# Hand-written manifest, phase 2, format 2. Read against Shortest Path Forever
+# v1.22.26.
+#
+# Route planner: draws its route on the map, adds a tracker block, and offers a
+# global API other addons call. It is one of the five "Forever family" addons
+# that share a byte-identical ForeverFamily.lua - see the unknown list, which is
+# the most interesting finding in this bundle.
+format: 2
+addon: ShortestPathForever
+toc: ShortestPathForever.toc
+versions: ">=1.22.0"
+interface: [16001]
+title: Shortest Path Forever
+
+provides:
+  - slot: map.route
+    aspect: content
+    via: custom-overlay
+    kind: add
+    source: "ShortestPathForever/UI/Route.lua:1"
+    note: Walking paths, flight points, boats, zeppelins, lifts, the tram and portals.
+
+  - slot: map.pins
+    aspect: content
+    via: custom-overlay
+    kind: add
+    source: "ShortestPathForever/UI/FlightPins.lua:1 and UI/StopPin.lua:1"
+
+  - slot: minimap.pins
+    aspect: content
+    via: custom-overlay
+    kind: add
+    source: "ShortestPathForever/UI/MinimapPins.lua:1"
+
+  - slot: quest.tracker.lines
+    aspect: content
+    via: custom-block
+    kind: add
+    source: "ShortestPathForever/UI/TrackerHost.lua:1"
+    note: >
+      Reads where Questie's own list sits and keeps its column clear of it
+      (UI/TrackerQuestie.lua), the same arrangement Legacy Forever uses.
+
+  - slot: shortestpathforever:api.route
+    aspect: content
+    kind: add
+    source: "ShortestPathForever/Core/API.lua:580 ShortestPathForever.API = API"
+    note: >
+      Legacy Forever hands journeys to it with an owner tag
+      (LegacyForever/Integrations/Navigate.lua:5).
+
+recommends:
+  - addon: OpenMap
+    note: >
+      Reads OpenMapAPI (CanvasFromWorldPos, ArtTopLevel, IsStitched) so its
+      route draws correctly on the stitched map. Absent or too old, it falls
+      back to plain map fractions.
+    source: "ShortestPathForever/UI/OpenMap.lua:4 OpenMapAPI: major 1, version 2 and up"
+  - addon: Questie
+    source: "ShortestPathForever/UI/TrackerQuestie.lua:1"
+  - addon: QuestieDB
+    source: "ShortestPathForever/ShortestPathForever.toc:1 OptionalDeps"
+
+unknown:
+  - >
+    A shared embedded file with version negotiation is a library, and the format
+    has no word for it. UI/ForeverFamily.lua is byte-identical in five addons
+    (three installed here: this one, SkillUpForever and LegacyForever). The
+    first copy to load sets the global ForeverFamily; a later copy with a higher
+    VERSION takes over, so an addon updated first never runs on an older copy
+    (ForeverFamily.lua:5-7, :515). Several addons therefore occupy the same slot
+    on purpose, and the winner is decided by version, not by load order and not
+    by yielding to a named addon. That is LibStub semantics, and neither
+    provides nor yields_to expresses it. Candidate for v0.3: a shared slot kind
+    where the highest version wins and no conflict is reported.
+  - >
+    Reading another addon API with a version floor is only expressible as
+    Recommends. UI/OpenMap.lua requires OpenMapAPI version 2 or higher and
+    checks the major version, degrading cleanly below that
+    (UI/OpenMap.lua:11-13). Recommends loses the version floor, and
+    Depends would be wrong - the addon works fine without OpenMap. What is
+    missing is a version constraint on the API inside an addon, not on the
+    addon version.

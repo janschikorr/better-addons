@@ -1,0 +1,37 @@
+# Hand-written manifest, phase 2, format 2. Read against QuestieTrace 1.8.0
+# (QuestieTrace-Camelot.toc, which is the Interface 16001 one; the -Classic.toc
+# covers the older clients).
+#
+# A data collection addon: it records what the player sees so the Questie
+# database can be corrected. It occupies no interface slot - the only frame it
+# has is its own consent dialog.
+format: 2
+addon: QuestieTrace
+toc: QuestieTrace-Camelot.toc
+versions: ">=1.8.0"
+interface: [16001]
+title: QuestieTrace
+
+provides:
+  - slot: questietrace:collect
+    aspect: content
+    kind: add
+    source: "QuestieTrace/QuestieTrace.lua:1 QuestieTraceCore"
+    reason: >
+      Claimed in its own namespace rather than against an interface slot: the
+      22 trackers in Modules/Trackers read game state (quest log, loot,
+      positions, reputation, skill lines) and write their own store. Reading
+      game state is not occupying a slot, and no verdict depends on it.
+
+recommends:
+  - addon: Questie
+    note: The collected data exists for Questie's database; it runs without it.
+    source: "QuestieTrace/QuestieTrace-Camelot.toc:5 Data collection addon for Questie"
+
+unknown:
+  - >
+    Pure observers have no place in the slot model, and that is probably right.
+    QuestieTrace touches nothing another addon could contend for, so every
+    verdict involving it is "compatible" for a reason the format cannot state:
+    not "no shared slots" but "this addon only watches". A category rather than
+    a slot - worth considering for the info site, not for the verdict rules.

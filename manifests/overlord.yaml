@@ -1,0 +1,34 @@
+# Hand-written manifest, phase 2, format 2. Read against Overlord Forever 2.1.0.
+format: 2
+addon: Overlord
+toc: Overlord.toc
+versions: ">=2.1.0"
+interface: [16001]
+title: Overlord Forever
+notes: "Zone capture for open-world war fronts: sync, map, leaderboard."
+
+provides:
+  - slot: map.pins
+    aspect: content
+    via: custom-overlay
+    kind: add
+    source: "Overlord/MapMarkers.lua:1 zone circles on the world map, overlays on a visible layer"
+    reason: >
+      Positions are recalculated from the canvas rather than read from
+      WorldMapFrame.mapID, and the canvas is cached on OnShow instead of being
+      read repeatedly, both to avoid tainting the map on 12.0
+      (MapMarkers.lua:3-5). A deliberate avoidance, like Legacy Forever's.
+
+  - slot: minimap.button
+    aspect: content
+    via: native
+    kind: add
+    source: "Overlord/Button.lua:1"
+
+unknown:
+  - >
+    Overlord's code comments are in French while its strings are localised
+    through FrontLocales.lua and GuideLocales.lua. Not a format question, but
+    worth recording for the quality guide: a reviewer who cannot read the
+    comments cannot check the reasoning, and the reasoning here is exactly the
+    taint avoidance that matters most on this client.
