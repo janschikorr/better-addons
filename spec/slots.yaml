@@ -7,14 +7,18 @@
 # Fields per slot:
 #   area        interface area, used for grouping on the info site
 #   title       short label
-#   exclusive   true  = only one addon can occupy it meaningfully
+#   exclusive   true  = only one addon can occupy it meaningfully PER ASPECT.
+#                       Two addons on the same slot touching different aspects
+#                       (one moves it, one restyles it) do not collide.
 #               false = additive, several addons possible
+#   aspects     the aspects that are meaningful here; informational, a manifest
+#               may name others
 #   ways        known ways (slot=way). "native" means: straight through the
 #               game API, without a library.
 #   note        what the slot stands for, and how a conflict becomes visible
 
-format: 1
-version: "0.1"
+format: 2
+version: "0.2"
 
 areas:
   map: World map
@@ -243,15 +247,24 @@ slots:
     ways: [native, HereBeDragons]
 
   # ------------------------------------------------------ Overall interface
-  ui.skin:
+  ui:
     area: ui
-    title: Overall look of the interface
+    title: The interface as a whole
     exclusive: true
-    ways: [replace-frame, retexture]
+    ways: [replace-frame, retexture, native]
     note: >
-      Addons that own the entire appearance. Two of them are always a conflict.
-      Pins and extra buttons from other addons stay compatible as long as they
-      do not claim this slot themselves.
+      The parent of every ui.* slot. An addon that owns the whole appearance
+      claims this one, and by the hierarchy rule (SPEC.md 3.5) that includes
+      every part below it - no need to list them twice. Two addons claiming it
+      on the same aspect are always a conflict; one claiming it for style and
+      another for geometry are not.
+
+  ui.unitframe:
+    area: ui
+    title: Unit frames as a group
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+    note: Parent of the individual unit frame slots.
 
   ui.unitframe.player:
     area: ui

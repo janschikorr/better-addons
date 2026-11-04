@@ -1,5 +1,5 @@
 # Rejected: unknown top-level field.
-format: 1
+format: 2
 addon: OpenMap
 conflicts:
   - Leatrix_Maps

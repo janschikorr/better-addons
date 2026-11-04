@@ -1,11 +1,12 @@
-# Hand-written manifest, phase 2. Read against ClassicUI Forever 0.41.1.
+# Hand-written manifest, phase 2, format 2. Read against ClassicUI Forever 0.41.1.
 #
-# ClassicUI restores the Classic look, and almost every part is a separate
-# toggle that defaults to on. It retextures existing Blizzard frames rather than
-# replacing them - except for the action bar and the quest watch, where it
-# supplies frames of its own. Art/ThemeParts.lua holds its own module-to-frame
-# table, which is exactly the mapping this project is building in mapping/.
-format: 1
+# ClassicUI restores the Classic look, and almost every part is a separate toggle
+# that defaults to on. It retextures existing Blizzard frames - aspect style -
+# rather than replacing them, except for the action bar and the quest watch,
+# where it supplies frames of its own. Art/ThemeParts.lua holds its own
+# module-to-frame table, which is exactly the mapping this project builds in
+# mapping/.
+format: 2
 addon: ClassicUIForever
 toc: ClassicUIForever.toc
 versions: ">=0.41.0"
@@ -13,59 +14,35 @@ interface: [16001, 120100, 120105, 120107]
 title: ClassicUI Forever
 
 provides:
-  - slot: ui.skin
+  - slot: ui
+    aspect: style
     via: retexture
     kind: modify
     source: "ClassicUIForever/Art/ThemeParts.lua:99 PART_KEYS"
+    reason: >
+      The theme as a whole, claimed at the parent slot. By the hierarchy rule
+      this covers every ui.* part, so the unit frames, cast bars, nameplates,
+      micro menu, bag bar and experience bars are no longer listed one by one -
+      in format 1 they were, which stated the same thing twice.
     note: >
-      The theme as a whole. Claimed because two addons that restyle the entire
-      interface are a conflict regardless of their module settings; the
-      individual parts below say what is actually touched.
+      The parts it covers, from ThemeParts.lua:76-91: themePartUnits (PlayerFrame,
+      TargetFrame, FocusFrame, PetFrame, PartyFrame), themePartCastBars,
+      themePartNameplates, themePartBars, themePartMicroMenu, themePartBagBar,
+      themePartXPBars.
 
   - slot: ui.actionbar.layout
+    aspect: content
     via: replace-frame
     kind: replace
     optional: true
     module: classicBar
     source: "ClassicUIForever/Art/GameArt.lua:275 classicBar: MainActionBar, BagsBar, MicroMenuContainer, StatusTrackingBarManager"
-    note: The gryphon bar. On by default (Core/Defaults.lua:7).
-
-  - slot: ui.unitframe.player
-    via: retexture
-    kind: modify
-    optional: true
-    module: themePartUnits
-    source: "ClassicUIForever/Art/ThemeParts.lua:77 themePartUnits: PlayerFrame"
-
-  - slot: ui.unitframe.target
-    via: retexture
-    kind: modify
-    optional: true
-    module: themePartUnits
-    source: "ClassicUIForever/Art/ThemeParts.lua:77 themePartUnits: TargetFrame, TargetFrameToT"
-
-  - slot: ui.unitframe.party
-    via: retexture
-    kind: modify
-    optional: true
-    module: themePartUnits
-    source: "ClassicUIForever/Art/ThemeParts.lua:77 themePartUnits: PartyFrame"
-
-  - slot: ui.castbar
-    via: retexture
-    kind: modify
-    optional: true
-    module: themePartCastBars
-    source: "ClassicUIForever/Art/ThemeParts.lua:79 themePartCastBars"
-
-  - slot: ui.nameplates
-    via: retexture
-    kind: modify
-    optional: true
-    module: themePartNameplates
-    source: "ClassicUIForever/Art/ThemeParts.lua:64 NamePlate%d -> themePartNameplates"
+    reason: >
+      The gryphon bar is a frame of its own, not a retexture, so this is a
+      content replacement and overrides the style claim on the parent.
 
   - slot: minimap.layout
+    aspect: style
     via: retexture
     kind: modify
     optional: true
@@ -73,30 +50,10 @@ provides:
     source: "ClassicUIForever/Art/ThemeParts.lua:81 themePartMinimap: MinimapCluster, Minimap"
     note: >
       Also adds a frame of its own, ForeverClassicUIMinimapBag, inside the
-      cluster.
-
-  - slot: ui.micromenu
-    via: retexture
-    kind: modify
-    optional: true
-    module: themePartMicroMenu
-    source: "ClassicUIForever/Art/ThemeParts.lua:84 themePartMicroMenu"
-
-  - slot: ui.bagbar
-    via: retexture
-    kind: modify
-    optional: true
-    module: themePartBagBar
-    source: "ClassicUIForever/Art/ThemeParts.lua:85 themePartBagBar"
-
-  - slot: ui.xpbar
-    via: retexture
-    kind: modify
-    optional: true
-    module: themePartXPBars
-    source: "ClassicUIForever/Art/ThemeParts.lua:86 themePartXPBars"
+      cluster. MoveAny moves the same slot; different aspects, so compatible.
 
   - slot: tooltip.frame
+    aspect: style
     via: retexture
     kind: modify
     optional: true
@@ -104,6 +61,7 @@ provides:
     source: "ClassicUIForever/Art/ThemeParts.lua:88 themePartTooltips: GameTooltip and the shopping tooltips"
 
   - slot: chat.frame
+    aspect: style
     via: retexture
     kind: modify
     optional: true
@@ -111,17 +69,19 @@ provides:
     source: "ClassicUIForever/Art/ThemeParts.lua:63 ChatFrame%d -> themePartChat, and :89"
 
   - slot: quest.tracker
+    aspect: content
     via: replace-frame
     kind: replace
     optional: true
     module: themePartQuestTracker
     source: "ClassicUIForever/Art/ThemeParts.lua:90 themePartQuestTracker: ObjectiveTrackerFrame, ForeverClassicUIQuestWatch"
-    note: >
-      Supplies its own watch frame, so this is a replacement rather than a
-      retexture. Addons that only write lines into the tracker occupy
+    reason: >
+      Supplies its own watch frame, so this replaces content rather than
+      restyling it. Addons that only write lines into the tracker occupy
       quest.tracker.lines and are unaffected.
 
   - slot: profession.frame
+    aspect: style
     via: retexture
     kind: modify
     optional: true
@@ -130,6 +90,7 @@ provides:
     note: Also covers the trainer and the professions book (Defaults.lua:71, 73).
 
   - slot: spellbook.frame
+    aspect: style
     via: retexture
     kind: modify
     optional: true
@@ -140,32 +101,8 @@ modules:
   ui.actionbar.layout:
     title: Classic action bar
     default: true
-  ui.unitframe.player:
-    title: Classic unit frames
-    default: true
-  ui.unitframe.target:
-    title: Classic unit frames
-    default: true
-  ui.unitframe.party:
-    title: Classic unit frames
-    default: true
-  ui.castbar:
-    title: Classic cast bars
-    default: true
-  ui.nameplates:
-    title: Classic nameplates
-    default: true
   minimap.layout:
     title: Classic minimap
-    default: true
-  ui.micromenu:
-    title: Classic micro menu
-    default: true
-  ui.bagbar:
-    title: Classic bag bar
-    default: true
-  ui.xpbar:
-    title: Classic experience bars
     default: true
   tooltip.frame:
     title: Classic tooltips
@@ -185,28 +122,15 @@ modules:
 
 unknown:
   - >
-    Module defaults are not expressible where they matter. Every '?' entry here
-    defaults to on, so in practice ClassicUI does occupy these slots on a fresh
-    install - but the format treats '?' as "ask at runtime", and the checker
-    assumes enabled when the addon reports nothing. For an addon whose parts
-    default to off (OpenMap's routes and minimap button) that assumption is
-    wrong in the opposite direction. The 'default' field in modules records the
-    truth but has no effect on any verdict. Candidate for v0.2.
-  - >
-    Retexturing is not modify. Changing a frame's textures is recorded here as
-    kind: modify with via: retexture, which is the closest the format allows,
-    but it does not collide the way a value change does: ClassicUI retexturing
-    the minimap and MoveAny moving it are genuinely compatible, and the test
-    oracle says so. Either retexture becomes an interaction kind of its own, or
-    the verdict rules have to read 'via' as well as 'kind'.
-  - >
-    ui.skin overlaps the parts it contains. Claiming ui.skin and
-    ui.unitframe.player at once states the same thing twice, and nothing in the
-    format says the first contains the second. A slot hierarchy - occupying a
-    parent implies its children - would remove the duplication and would also
-    answer whether MoveAny's 115 unlisted frames need slots at all.
-  - >
     ClassicUI declares four interface numbers in one .toc (16001, 120100,
-    120105, 120107), so "one manifest per .toc" does not in fact give one
-    manifest per game version here. The versions it supports and the slots it
-    occupies may differ across those four.
+    120105, 120107), so "one manifest per .toc" does not give one manifest per
+    game version here. The entries above are read against Forever (16001); which
+    of them hold for the other three is unverified, and the per-entry
+    'interface' narrowing can record the answer once someone checks.
+  - >
+    The theme has far more switches than the slots can express: Core/Defaults.lua
+    holds over a hundred, down to individual micro buttons (hideMicroShop,
+    hideMicroJournal) and theme variants (bronze, dark, custom). Only the
+    switches that decide whether a slot is touched at all are modelled. That is
+    the right cut, but it means a quality review cannot tell from the manifest
+    whether a given switch is on.

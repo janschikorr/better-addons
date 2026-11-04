@@ -1,0 +1,12 @@
+# Rejected: a module must state its default, because assuming either way was
+# wrong half the time.
+format: 2
+addon: OpenMap
+provides:
+  - slot: map.route
+    aspect: content
+    optional: true
+    module: routes
+modules:
+  map.route:
+    title: Boat routes

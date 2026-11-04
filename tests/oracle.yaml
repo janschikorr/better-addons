@@ -15,7 +15,7 @@
 #   result    filled in during phase 7: confirmed | deviated, plus a note
 
 format: 1
-version: "0.1"
+version: "0.2"
 
 addons:
   under_test:
@@ -42,9 +42,46 @@ addons:
 
 pairs:
   - pair: [OpenMap, Leatrix_Maps]
+    verdict: clash
+    settings: ["Unlock map frame", "Scale the map", "Use simple map frame", "Show coordinates"]
+    why: >
+      Not a plain conflict. OpenMap cooperates with Leatrix Maps and lifts its
+      pins above the stitched artwork; only these four Leatrix options fight it.
+      The original prediction of "conflict" was changed after reading
+      OpenMap/Map/Compat.lua:181 - it was not decidable as written, because with
+      those options off the pair simply works.
+    observe: >
+      With the four options off: both addons active, Leatrix pins visible on the
+      stitched map, no warning beyond OpenMap's login note. With any of them on:
+      OpenMap names it at login, and the map window or coordinates misbehave.
+    result: null
+
+  - pair: [OpenMap, MoveAny]
+    verdict: handover
+    why: OpenMap yields map.window to MoveAny (OpenMap/Map/Window.lua:216).
+    observe: >
+      OpenMap shows no title bar or resize grips; MoveAny moves and sizes the
+      map window, and the position survives a reload.
+    result: null
+
+  - pair: [ClassicUI_Forever, MoveAny]
+    verdict: compatible
+    why: >
+      ClassicUI restyles the minimap, MoveAny moves it - different aspects on
+      the same slot. Version 0.1 predicted a conflict here, which was the clearest
+      false positive in the first draft.
+    observe: Classic minimap art in the place MoveAny put it, both intact.
+    result: null
+
+  - pair: [DialogueUI, MoveAny]
     verdict: conflict
-    why: Both claim the world map frame.
-    observe: Warning appears; after choosing one, only a single map is active.
+    why: >
+      DialogueUI replaces the quest frame's content while MoveAny moves the
+      original. A content replace defeats a foreign geometry entry. Version 0.1
+      did not flag this at all.
+    observe: >
+      Whether MoveAny's saved position applies to the DialogueUI frame, and
+      whether the native quest frame still appears anywhere.
     result: null
 
   - pair: [Spoken, Forever_TTS]

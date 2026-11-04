@@ -2,15 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://janschikorr.github.io/better-addons/spec/manifest.schema.json",
   "title": "Better Addons manifest",
-  "description": "A manifest describes which interface slots one .toc of an addon occupies, and how the addon relates to other addons. See spec/SPEC.md.",
+  "description": "A manifest describes which interface slots one .toc of an addon occupies, which aspect of each it touches, and how the addon relates to other addons. See spec/SPEC.md.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["format", "addon"],
+  "required": [
+    "format",
+    "addon"
+  ],
   "properties": {
     "format": {
-      "description": "Manifest format version. Tools reject a value they do not know rather than misreading the file.",
+      "description": "Manifest format version. Tools reject a value they do not know rather than misreading the file. Format 1 is still readable: its entries mean aspect 'content'.",
       "type": "integer",
-      "const": 1
+      "enum": [
+        1,
+        2
+      ]
     },
     "addon": {
       "description": "Addon folder name, as it appears in Interface/AddOns.",
@@ -27,48 +33,87 @@
     },
     "interface": {
       "description": "Interface numbers from the .toc that this manifest was derived from.",
-      "type": "array",
-      "minItems": 1,
-      "items": { "type": "integer", "minimum": 10000 }
+      "$ref": "#/$defs/interfaceList"
     },
-    "title": { "type": "string", "minLength": 1 },
-    "notes": { "type": "string" },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "notes": {
+      "type": "string"
+    },
     "unknown": {
-      "description": "Statements that could not be expressed in this format version. Feeds the gap list for v0.2.",
+      "description": "Statements that could not be expressed in this format version. Feeds the gap list for the next spec version.",
       "type": "array",
-      "items": { "type": "string", "minLength": 1 }
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     },
     "provides": {
-      "description": "Slots this addon occupies.",
+      "description": "Slots this addon occupies. Occupying a slot occupies its children too.",
       "type": "array",
-      "items": { "$ref": "#/$defs/provide" }
+      "items": {
+        "$ref": "#/$defs/provide"
+      }
     },
     "depends": {
       "description": "Addons or slots that must be present. Unmet entries make the addon incompatible.",
       "type": "array",
-      "items": { "$ref": "#/$defs/requirement" }
+      "items": {
+        "$ref": "#/$defs/requirement"
+      }
     },
     "recommends": {
       "description": "Addons or slots that improve this addon. Unmet entries are notes only.",
       "type": "array",
-      "items": { "$ref": "#/$defs/requirement" }
+      "items": {
+        "$ref": "#/$defs/requirement"
+      }
     },
     "breaks": {
       "description": "Addons that must not run alongside this one. Always a conflict.",
       "type": "array",
-      "items": { "$ref": "#/$defs/break" }
+      "items": {
+        "$ref": "#/$defs/break"
+      }
+    },
+    "clashes": {
+      "description": "Addons that coexist except while one of the named settings is on. Reported as a note, not a conflict.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/clash"
+      }
+    },
+    "yields_to": {
+      "description": "Slots this addon claims only while the named addon is absent. A loaded addon turns the pair into a handover rather than a conflict.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/yield"
+      }
     },
     "modules": {
-      "description": "Modules referenced by optional ('?') entries, with the key the addon reports in BetterAddons_Active.",
+      "description": "Modules referenced by optional ('?') entries, keyed by the slot, with the default that applies when the addon reports nothing at runtime.",
       "type": "object",
-      "propertyNames": { "$ref": "#/$defs/slotName" },
+      "propertyNames": {
+        "$ref": "#/$defs/slotName"
+      },
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["title"],
+        "required": [
+          "title",
+          "default"
+        ],
         "properties": {
-          "title": { "type": "string", "minLength": 1 },
-          "default": { "type": "boolean" }
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": {
+            "description": "Whether the module is on in a fresh install. Required, because assuming either way was wrong half the time.",
+            "type": "boolean"
+          }
         }
       }
     }
@@ -83,10 +128,27 @@
       "type": "string",
       "pattern": "^([a-z0-9_]+:)?[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*)*$"
     },
+    "aspect": {
+      "description": "Which side of the slot is touched. See SPEC.md section 4.",
+      "enum": [
+        "content",
+        "geometry",
+        "style",
+        "behaviour"
+      ]
+    },
     "versionConstraint": {
       "description": "Debian-style version constraint, e.g. '>=2.0', '<3.0', '=1.4.2'.",
       "type": "string",
       "pattern": "^(<<|<=|=|>=|>>|<|>)[0-9][0-9A-Za-z.+~-]*$"
+    },
+    "interfaceList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "integer",
+        "minimum": 10000
+      }
     },
     "way": {
       "description": "How the slot is occupied. 'native' means through the game API directly.",
@@ -101,14 +163,30 @@
     "provide": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["slot"],
+      "required": [
+        "slot"
+      ],
       "properties": {
-        "slot": { "$ref": "#/$defs/slotName" },
-        "via": { "$ref": "#/$defs/way" },
-        "via_version": { "$ref": "#/$defs/versionConstraint" },
+        "slot": {
+          "$ref": "#/$defs/slotName"
+        },
+        "aspect": {
+          "$ref": "#/$defs/aspect"
+        },
+        "via": {
+          "$ref": "#/$defs/way"
+        },
+        "via_version": {
+          "$ref": "#/$defs/versionConstraint"
+        },
         "kind": {
-          "description": "Interaction kind, see SPEC.md section 4.",
-          "enum": ["replace", "hook", "add", "modify"]
+          "description": "Interaction kind, see SPEC.md section 4.2.",
+          "enum": [
+            "replace",
+            "hook",
+            "add",
+            "modify"
+          ]
         },
         "optional": {
           "description": "True for '?' entries: applies only while the module is enabled.",
@@ -119,66 +197,238 @@
           "type": "string",
           "minLength": 1
         },
-        "source": { "$ref": "#/$defs/source" },
-        "note": { "type": "string" }
+        "interface": {
+          "description": "Narrows this entry to some of the .toc's interface numbers.",
+          "$ref": "#/$defs/interfaceList"
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "reason": {
+          "description": "Why this way or aspect was chosen. Free text; not machine-checkable by design.",
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": "string"
+        }
       },
       "allOf": [
         {
           "description": "via_version requires via.",
-          "if": { "required": ["via_version"] },
-          "then": { "required": ["via"] }
+          "if": {
+            "required": [
+              "via_version"
+            ]
+          },
+          "then": {
+            "required": [
+              "via"
+            ]
+          }
         },
         {
           "description": "module requires optional: true.",
-          "if": { "required": ["module"] },
-          "then": { "properties": { "optional": { "const": true } }, "required": ["optional"] }
+          "if": {
+            "required": [
+              "module"
+            ]
+          },
+          "then": {
+            "properties": {
+              "optional": {
+                "const": true
+              }
+            },
+            "required": [
+              "optional"
+            ]
+          }
         }
       ]
     },
     "requirement": {
       "description": "Either an addon name with an optional version, or a slot name. Shorthand: a plain string.",
       "oneOf": [
-        { "type": "string", "minLength": 1 },
+        {
+          "type": "string",
+          "minLength": 1
+        },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["addon"],
+          "required": [
+            "addon"
+          ],
           "properties": {
-            "addon": { "$ref": "#/$defs/addonName" },
-            "version": { "$ref": "#/$defs/versionConstraint" },
-            "source": { "$ref": "#/$defs/source" },
-            "note": { "type": "string" }
+            "addon": {
+              "$ref": "#/$defs/addonName"
+            },
+            "version": {
+              "$ref": "#/$defs/versionConstraint"
+            },
+            "source": {
+              "$ref": "#/$defs/source"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
           }
         },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["slot"],
+          "required": [
+            "slot"
+          ],
           "properties": {
-            "slot": { "$ref": "#/$defs/slotName" },
-            "via": { "$ref": "#/$defs/way" },
-            "via_version": { "$ref": "#/$defs/versionConstraint" },
-            "source": { "$ref": "#/$defs/source" },
-            "note": { "type": "string" }
+            "slot": {
+              "$ref": "#/$defs/slotName"
+            },
+            "aspect": {
+              "$ref": "#/$defs/aspect"
+            },
+            "via": {
+              "$ref": "#/$defs/way"
+            },
+            "via_version": {
+              "$ref": "#/$defs/versionConstraint"
+            },
+            "source": {
+              "$ref": "#/$defs/source"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
           }
         }
       ]
     },
     "break": {
       "oneOf": [
-        { "$ref": "#/$defs/addonName" },
+        {
+          "$ref": "#/$defs/addonName"
+        },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["addon"],
+          "required": [
+            "addon"
+          ],
           "properties": {
-            "addon": { "$ref": "#/$defs/addonName" },
-            "version": { "$ref": "#/$defs/versionConstraint" },
-            "reason": { "type": "string" },
-            "source": { "$ref": "#/$defs/source" }
+            "addon": {
+              "$ref": "#/$defs/addonName"
+            },
+            "version": {
+              "$ref": "#/$defs/versionConstraint"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/source"
+            }
           }
         }
       ]
+    },
+    "clash": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "addon",
+        "settings"
+      ],
+      "properties": {
+        "addon": {
+          "$ref": "#/$defs/addonName"
+        },
+        "version": {
+          "$ref": "#/$defs/versionConstraint"
+        },
+        "settings": {
+          "description": "The other addon's own setting names, verbatim, so a player can find them. Free text by design.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "slot": {
+          "description": "The slot the clash is about, where there is one.",
+          "$ref": "#/$defs/slotName"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        }
+      }
+    },
+    "yield": {
+      "description": "This addon drops the named slot while that addon is loaded.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "addon",
+        "slot"
+      ],
+      "properties": {
+        "addon": {
+          "$ref": "#/$defs/addonName"
+        },
+        "slot": {
+          "$ref": "#/$defs/slotName"
+        },
+        "aspect": {
+          "$ref": "#/$defs/aspect"
+        },
+        "complete": {
+          "description": "True when the addon stands down from this slot entirely, false when it only partly defers.",
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        }
+      }
     }
-  }
+  },
+  "allOf": [
+    {
+      "description": "Format 2 requires an aspect on every provide. Format 1 entries are read as aspect 'content'.",
+      "if": {
+        "properties": {
+          "format": {
+            "const": 2
+          }
+        },
+        "required": [
+          "format"
+        ]
+      },
+      "then": {
+        "properties": {
+          "provides": {
+            "items": {
+              "required": [
+                "slot",
+                "aspect"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
 }

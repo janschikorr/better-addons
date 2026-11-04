@@ -1,13 +1,15 @@
 # Shorthand form: depends/recommends/breaks as plain strings.
-format: 1
+format: 2
 addon: Spoken
 toc: Spoken.toc
 provides:
   - slot: audio.tts
+    aspect: content
     via: SpeakText
     kind: add
     source: "Spoken/Speech.lua:120"
   - slot: quest.detail
+    aspect: behaviour
     kind: hook
     source: "Spoken/Quest.lua:31"
 depends:

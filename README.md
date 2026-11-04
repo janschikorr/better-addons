@@ -23,17 +23,24 @@ judged is the result, not the tool.
 Five lines in an addon's `.toc`:
 
 ```
-## X-BetterAddons-Format: 1
-## X-BetterAddons-Provides: map.window, map.pins=HereBeDragons>=2.0
-## X-BetterAddons-Depends: data.zones
+## X-BetterAddons-Format: 2
+## X-BetterAddons-Provides: map.art/content=stitched, map.window/geometry
 ## X-BetterAddons-Recommends: Questie
-## X-BetterAddons-Breaks: Leatrix_Maps, Mapster<3.0
+## X-BetterAddons-Breaks: Mapster, Magnify
+## X-BetterAddons-Clashes: Leatrix_Maps[Unlock map frame,Scale the map]
+## X-BetterAddons-Yields-To: MoveAny=map.window
 ```
 
-`Provides` names the **slots** of the interface the addon occupies. A slot marked
-*exclusive* can only be owned by one addon — two providers are a conflict. An
-*additive* slot takes several, as long as the **ways** (`=HereBeDragons`) are
-compatible. Full details: [`spec/SPEC.md`](spec/SPEC.md).
+`Provides` names the **slots** of the interface the addon occupies, and after the
+slash the **aspect**: whether it changes what a part shows (`content`), where it
+sits (`geometry`), how it looks (`style`) or how it responds (`behaviour`). Two
+addons in the same slot touching different aspects usually cooperate — which is
+why ClassicUI restyling the minimap and MoveAny moving it are compatible.
+
+`Yields-To` says "I claim this only while that addon is absent", and `Clashes`
+records a conflict that depends on a setting rather than on installation. Full
+details: [`spec/SPEC.md`](spec/SPEC.md); the evidence for each rule is in
+[`spec/CHANGELOG.md`](spec/CHANGELOG.md).
 
 Addons without a manifest of their own are described by a YAML file in
 [`manifests/`](manifests/), using the same fields.
@@ -44,7 +51,8 @@ Addons without a manifest of their own are described by a YAML file in
 better-addons/
 ├── AGENTS.md                 context for AI assistants: workflow, rules, pointers
 ├── spec/
-│   ├── SPEC.md               syntax and meaning of the four keywords
+│   ├── SPEC.md               syntax and meaning of the keywords
+│   ├── CHANGELOG.md          what changed per version, and the code that forced it
 │   ├── slots.yaml            slot registry: area, title, exclusive/additive, ways
 │   └── manifest.schema.json  schema for automatic validation
 ├── mapping/
@@ -93,13 +101,14 @@ game, on the addon files alone.
 | # | Phase | State |
 | --- | --- | --- |
 | 1 | Specification v0.1, slot registry, schema, site skeleton | **done** |
-| 2 | Hand-written manifests for the thirteen test addons | next |
+| 2a | Specification v0.2, pulled forward from phase 8 | **done** |
+| 2 | Hand-written manifests: 4 of 18 done (bundle 1) | in progress |
 | 3 | API pattern mapping and scan script, with quality report | |
 | 4 | AI context file, including the quality rules | |
 | 5 | Checker addon v0.1, static part | |
 | 6 | Checker addon, runtime observation | |
 | 7 | In-game testing against the test oracle | |
-| 8 | Evaluation, specification v0.2 | |
+| 8 | Evaluation of the in-game findings, specification v0.3 | |
 | 9 | Quality guide v0.1, full info site | |
 
 ## Licence

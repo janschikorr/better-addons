@@ -1,0 +1,8 @@
+# A format 1 manifest stays readable: its entries mean aspect 'content'.
+format: 1
+addon: WhatsTraining
+toc: WhatsTraining.toc
+provides:
+  - slot: spellbook.tab
+    kind: add
+    source: "WhatsTraining/Core.lua:12"

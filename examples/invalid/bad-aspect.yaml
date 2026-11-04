@@ -1,0 +1,6 @@
+# Rejected: aspect outside the allowed set.
+format: 2
+addon: OpenMap
+provides:
+  - slot: map.art
+    aspect: appearance

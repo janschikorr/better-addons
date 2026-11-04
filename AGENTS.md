@@ -27,6 +27,7 @@ judged is the result, not the tool.
 | [`spec/SPEC.md`](spec/SPEC.md) | The four keywords, slot expressions, version constraints, how a pair is judged |
 | [`spec/slots.yaml`](spec/slots.yaml) | Every slot that exists, and whether it is exclusive or additive |
 | [`spec/manifest.schema.json`](spec/manifest.schema.json) | The machine-checkable shape of a YAML manifest |
+| [`spec/CHANGELOG.md`](spec/CHANGELOG.md) | What changed between spec versions, and the addon code that forced each change |
 | [`examples/`](examples/) | Manifests that must pass, and manifests that must be rejected |
 
 ## Writing a manifest
@@ -34,12 +35,23 @@ judged is the result, not the tool.
 1. Read the addon's code. Find every place where it touches the interface.
 2. Map each place to a slot in `spec/slots.yaml`. **Do not invent slots.** If
    nothing fits, add the finding to the manifest's `unknown` list and say so.
-3. Record `via` (the way) and `kind` (`replace`, `hook`, `add`, `modify`).
-4. Give every entry a `source` of the form `path/file.lua:123`. An entry without a
-   source is a guess, and guesses do not belong in a manifest.
-5. Validate: `python tools/validate.py manifests/<addon>.yaml`
-6. Where the code is ambiguous, **say so instead of deciding**. A flagged
-   uncertainty is a correct answer; a confident wrong slot is not.
+3. Decide the **aspect** for each entry, and get this right - it decides the
+   verdict. `content` is what a frame shows, `geometry` is where it sits and how
+   big it is, `style` is textures and fonts, `behaviour` is how it responds.
+   An addon that only moves frames is `geometry`, not `content`.
+4. Claim the **nearest useful parent slot**, not every child: occupying a slot
+   occupies its children. Claiming both a slot and its ancestor is rejected.
+5. Record `via` (the way) and `kind` (`replace`, `hook`, `add`, `modify`).
+6. If the addon stands down for another addon, use `yields_to`. If it conflicts
+   only under a setting, use `clashes`, not `breaks`.
+7. For an optional (`?`) entry, state the module's real `default` - read it from
+   the code, do not assume. Both assumptions were wrong in half the cases.
+8. Give every entry a `source` of the form `path/file.lua:123`. An entry without
+   a source is a guess, and guesses do not belong in a manifest. Add a `reason`
+   wherever the choice would otherwise read as careless.
+9. Validate: `python tools/validate.py manifests/<addon>.yaml`
+10. Where the code is ambiguous, **say so instead of deciding**. A flagged
+    uncertainty is a correct answer; a confident wrong slot is not.
 
 ## Checking an API call
 

@@ -1,40 +1,45 @@
-# Hand-written manifest, phase 2. Every entry has a source; nothing is inferred
-# from the addon's description. Read against OpenMap v0.7.5-beta.
-format: 1
+# Hand-written manifest, phase 2, format 2. Every entry has a source; nothing is
+# inferred from the addon's description. Read against OpenMap v0.7.5-beta.
+format: 2
 addon: OpenMap
 toc: OpenMap.toc
 versions: ">=0.7.5"
 interface: [16001]
 title: OpenMap
 notes: >
-  One stitched world map. OpenMap owns the artwork and the view, and
-  deliberately leaves the window, other addons' pins and the quest log alone -
-  it carries a compatibility module (Map/Compat.lua) that lifts foreign pins
-  above its own artwork.
+  One stitched world map. OpenMap owns the artwork and the view, and leaves the
+  window to MoveAny where that is installed. Map/Compat.lua also raises the
+  frame levels of Leatrix Maps, Azeroth Tripview, Books on Map Forever and
+  RareScanner so their pins stay visible above the stitched artwork - deliberate
+  maintenance of other addons' frames, which by SPEC.md section 9 is recorded
+  here rather than as an occupied slot.
 
 provides:
   - slot: map.art
+    aspect: content
     via: stitched
     kind: replace
     source: "OpenMap/Map/Compat.lua:2 on the stitched map the map art and the view are OpenMap's"
     note: >
-      Hides the artwork of HighFidelityWorldMap, BetterMaps and HiddenMaps
-      while the stitched map shows, and restores it on other maps.
+      Hides the artwork of HighFidelityWorldMap, BetterMaps and HiddenMaps while
+      the stitched map shows, and restores it on other maps.
 
   - slot: map.view
+    aspect: behaviour
     via: stitched
     kind: replace
     source: "OpenMap/Map/Compat.lua:14 their view changes and their zoom steps don't apply there"
 
   - slot: map.window
-    via: native
+    aspect: geometry
     kind: modify
     source: "OpenMap/Map/Window.lua:198 SetupWindow"
-    note: >
-      Title bar, resize grips and a remembered place. Stands down entirely when
-      MoveAny is installed (Window.lua:200, 216) - see the unknown list below.
+    reason: >
+      Title bar, resize grips and a remembered place, for players without a
+      dedicated mover. Dropped entirely when MoveAny is present - see yields_to.
 
   - slot: map.label
+    aspect: content
     via: native
     kind: replace
     source: "OpenMap/Map/Extras.lua:26 labelProvider, Blizzard's area label"
@@ -43,27 +48,22 @@ provides:
       afterwards (Compat.lua:163 Reassert).
 
   - slot: map.coords
+    aspect: content
     via: native
     kind: add
+    optional: true
+    module: coords
     source: "OpenMap/Map/Extras.lua:19 d.coords = true"
-    note: On by default. Reads Blizzard's coordinate CVars back off.
 
   - slot: map.pins
-    via: HereBeDragons
-    kind: modify
-    source: "OpenMap/Map/Extras.lua:9 other addons' pins through HereBeDragons"
-    note: >
-      Does not place its own pins this way - it makes foreign HereBeDragons
-      pins work on the stitched map, and hides them briefly while zooming
-      (Extras.lua:23 d.zoomHidePins).
-
-  - slot: map.pins
+    aspect: content
     via: native
     kind: add
     source: "OpenMap/Map/Quests.lua:5 C_QuestLog.GetQuestsOnMap, OpenMap's own icons"
     note: Quest icons for every stitched zone, in the look of Blizzard's.
 
   - slot: map.route
+    aspect: content
     via: native
     kind: add
     optional: true
@@ -71,46 +71,59 @@ provides:
     source: "OpenMap/Map/Routes.lua:2 boat and zeppelin routes (off until turned on)"
 
   - slot: journal.dungeon.pins
+    aspect: content
     via: native
     kind: add
     source: "OpenMap/Map/Dungeons.lua:1297 C_EncounterJournal.GetDungeonEntrancesForMap"
 
   - slot: minimap.button
+    aspect: content
     via: native
     kind: add
     optional: true
-    module: minimap.button
+    module: minimapButton
     source: "OpenMap/Map/Launcher.lua:13 d.minimapButton = false"
-    note: Off by default.
 
   - slot: cvar.map
+    aspect: behaviour
     via: SetCVar
     kind: modify
     source: "OpenMap/Map/Extras.lua:27 SetCVarSafe"
-    note: >
-      Holds off mapFade in favour of its own fade, and turns Blizzard's
-      worldMapShowPlayerCoords and worldMapShowCursorCoords back off while its
-      own readout is on (Compat.lua:167 OnCVar).
+    reason: >
+      Holds off the game's mapFade in favour of its own, which never fades under
+      the cursor, and keeps Blizzard's coordinate CVars off while its own
+      readout is on (Compat.lua:167 OnCVar).
 
   # Slots OpenMap offers to other addons (OpenMapAPI, API.lua:22, version 4).
   - slot: openmap:api.position
+    aspect: content
     kind: add
     source: "OpenMap/API.lua:39 WorldFromMap, MapFromWorld, CanvasFromWorldPos"
-    note: Converting between stitched-world and uiMap coordinates.
   - slot: openmap:api.view
+    aspect: content
     kind: add
     source: "OpenMap/API.lua:86 GetView, ShowWorld, and the ViewChanged callback"
   - slot: openmap:menu.toggle
+    aspect: content
     kind: add
     source: "OpenMap/API.lua:109 RegisterMenuToggle"
-    note: Another addon can put its own switch into OpenMap's menu.
   - slot: openmap:dungeon.section
+    aspect: content
     kind: add
     source: "OpenMap/API.lua:123 RegisterDungeonSection"
   - slot: openmap:townsfolk.provider
+    aspect: content
     kind: add
     source: "OpenMap/API.lua:136 RegisterTownsfolkProvider"
     note: An NPC database in Questie's shape, for players without Questie.
+
+yields_to:
+  - addon: MoveAny
+    slot: map.window
+    aspect: geometry
+    complete: true
+    reason: The map window is MoveAny's to move and size; OpenMap's title bar, grips and saved place stand down.
+    source: "OpenMap/Map/Window.lua:216 if not moveAny then"
 
 recommends:
   - addon: Questie
@@ -135,7 +148,20 @@ breaks:
     reason: Its Mover sizes and places the map too, and the two fight over its scale.
     source: "OpenMap/Map/Window.lua:201 Enhance QoL's Mover (World Map)"
 
+clashes:
+  - addon: Leatrix_Maps
+    slot: map.window
+    settings: ["Unlock map frame", "Scale the map", "Use simple map frame", "Show coordinates"]
+    reason: >
+      The two cooperate in general - OpenMap lifts Leatrix's pins above its own
+      artwork - but these four options fight OpenMap's window and coordinates.
+      OpenMap names them once at login.
+    source: "OpenMap/Map/Compat.lua:181 UnlockMap, ScaleWorldMap, SimpleMapFrame, ShowCoords"
+
 modules:
+  map.coords:
+    title: Coordinate readout
+    default: true
   map.route:
     title: Boat and zeppelin routes
     default: false
@@ -143,33 +169,12 @@ modules:
     title: Minimap button
     default: false
 
-# Statements the format cannot express yet. Phase 8 decides what to add.
 unknown:
-  - >
-    Conditional occupation: OpenMap claims map.window only while MoveAny is
-    absent, and stands down completely when it is installed
-    (Window.lua:200, 216). The format can express "only while my own module is
-    on" ('?') but not "only while another addon is away". Candidate for v0.2:
-    a yields-to statement, which would turn a predicted conflict into a
-    predicted handover.
-  - >
-    Partial conflict: Leatrix Maps is compatible in general - OpenMap lifts its
-    pins above the stitched artwork - but three of its options (Unlock map
-    frame, Scale the map, Simple map frame) and its coordinate readout do
-    clash, and OpenMap names them at login (Compat.lua:175 Warn). Breaks is all
-    or nothing, so this is currently recorded nowhere.
   - >
     Duplicated function without a slot conflict: OpenMap's dungeon cards
     (Map/Dungeons.lua, with map, bosses and a quests tab) overlap in purpose
     with Aegis Instance Journal and ForeverDungeonJournal without claiming
-    journal.dungeon, because they live on the map rather than replacing a
-    frame. The slot model sees no conflict here, and in technical terms there
-    is none - but this is exactly the "yet another addon for the same thing"
-    case the project wants to make visible.
-  - >
-    Pin lifting as an interaction kind: Compat.lua changes other addons' frame
-    levels (Leatrix Maps, Azeroth Tripview, Books on Map Forever, RareScanner)
-    so their pins stay visible. That is neither replace, hook, add nor
-    modify of a slot the addon owns - it is maintenance work on a foreign
-    addon's frames, and arguably the most compatibility-minded thing in the
-    whole test set.
+    journal.dungeon, because they live on the map rather than replacing a frame.
+    No verdict rule sees this, and technically there is nothing to see - but it
+    is exactly the "yet another addon for the same thing" case the project wants
+    to surface. It belongs on the info site, not in the verdict.

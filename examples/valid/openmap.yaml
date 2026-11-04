@@ -1,44 +1,61 @@
-# Fictional reference manifest. Values are illustrative, not derived from code.
-format: 1
+# Fictional reference manifest showing most of format 2. Values are
+# illustrative, not derived from code.
+format: 2
 addon: OpenMap
 toc: OpenMap.toc
 versions: ">=2.4.0"
-interface: [11507]
+interface: [16001]
 title: OpenMap
 provides:
-  - slot: map.window
-    via: native
+  - slot: map.art
+    aspect: content
+    via: stitched
     kind: replace
-    source: "OpenMap/Core.lua:812 WorldMapFrame reparented"
+    source: "OpenMap/Core.lua:812 the stitched artwork replaces the zone image"
+  - slot: map.window
+    aspect: geometry
+    kind: modify
+    source: "OpenMap/Window.lua:40"
+    reason: Title bar and grips, for players without a dedicated mover.
   - slot: map.pins
+    aspect: content
     via: HereBeDragons
     via_version: ">=2.0"
     kind: add
     source: "OpenMap/Pins.lua:44"
-  - slot: map.filter
-    via: native
-    kind: add
-    source: "OpenMap/Filters.lua:17"
   - slot: openmap:canvas.overlay
+    aspect: content
     kind: add
     note: Offered to other addons for drawing on the canvas.
-  - slot: minimap.layout
-    via: replace-frame
-    kind: replace
+  - slot: minimap.button
+    aspect: content
+    kind: add
     optional: true
-    module: minimap
-    source: "OpenMap/Minimap.lua:9"
+    module: minimapButton
+    interface: [16001]
+    source: "OpenMap/Launcher.lua:9"
+yields_to:
+  - addon: MoveAny
+    slot: map.window
+    aspect: geometry
+    complete: true
+    reason: The window is MoveAny's to place.
+    source: "OpenMap/Window.lua:216"
 depends:
   - slot: data.zones
     via: HereBeDragons
 recommends:
   - Questie
 breaks:
-  - addon: Leatrix_Maps
-    reason: Both claim map.window.
   - addon: Mapster
     version: "<3.0"
+clashes:
+  - addon: Leatrix_Maps
+    slot: map.window
+    settings: ["Unlock map frame", "Scale the map"]
+    reason: Those two options fight the map window; everything else coexists.
+    source: "OpenMap/Compat.lua:181"
 modules:
-  minimap.layout:
-    title: Minimap restyling
+  minimap.button:
+    title: Minimap button
     default: false

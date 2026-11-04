@@ -1,5 +1,6 @@
 # Rejected: slot names are lowercase dotted segments.
-format: 1
+format: 2
 addon: OpenMap
 provides:
   - slot: Map.Window
+    aspect: content

@@ -1,6 +1,7 @@
 # Rejected: module without optional: true.
-format: 1
+format: 2
 addon: OpenMap
 provides:
   - slot: minimap.layout
+    aspect: style
     module: minimap

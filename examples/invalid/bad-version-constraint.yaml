@@ -1,5 +1,5 @@
 # Rejected: version constraint needs an operator.
-format: 1
+format: 2
 addon: OpenMap
 breaks:
   - addon: Mapster

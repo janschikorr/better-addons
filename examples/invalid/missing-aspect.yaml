@@ -1,0 +1,6 @@
+# Rejected: format 2 requires an aspect on every provide.
+format: 2
+addon: OpenMap
+provides:
+  - slot: map.art
+    kind: replace

@@ -1,0 +1,9 @@
+# Rejected: occupying a slot occupies its children, so naming both says the
+# same thing twice (SPEC.md 3.5).
+format: 2
+addon: ClassicUIForever
+provides:
+  - slot: ui
+    aspect: style
+  - slot: ui.unitframe.player
+    aspect: style

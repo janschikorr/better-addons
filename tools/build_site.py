@@ -111,19 +111,30 @@ def render_compatibility() -> str:
         )
 
     out = ["<table><thead><tr><th>Addon</th><th>Occupies</th>"
-           "<th>Needs</th><th>Breaks with</th></tr></thead><tbody>"]
+           "<th>Needs</th><th>Breaks with</th><th>Yields to</th></tr></thead><tbody>"]
     for manifest in manifests:
         provides = ", ".join(
             f"<code>{esc(e.get('slot'))}</code>"
+            f"<span class=\"aspect\">{esc(e.get('aspect', 'content'))}</span>"
             for e in manifest.get("provides") or []
             if isinstance(e, dict)
         ) or "&mdash;"
         depends = ", ".join(esc(describe_requirement(e)) for e in manifest.get("depends") or []) or "&mdash;"
-        breaks = ", ".join(esc(describe_break(e)) for e in manifest.get("breaks") or []) or "&mdash;"
+        breaks = ", ".join(esc(describe_break(e)) for e in manifest.get("breaks") or []) or ""
+        for entry in manifest.get("clashes") or []:
+            settings = ", ".join(entry.get("settings") or [])
+            breaks += (", " if breaks else "") + (
+                f'{esc(entry.get("addon"))} <span class="note">(only with: {esc(settings)})</span>'
+            )
+        breaks = breaks or "&mdash;"
+        yields = ", ".join(
+            f'{esc(e.get("addon"))} <span class="note">{esc(e.get("slot"))}</span>'
+            for e in manifest.get("yields_to") or []
+        ) or "&mdash;"
         out.append(
             f'<tr><td><strong>{esc(manifest.get("addon"))}</strong><br>'
             f'<span class="note">{esc(manifest.get("toc") or "")}</span></td>'
-            f"<td>{provides}</td><td>{depends}</td><td>{breaks}</td></tr>"
+            f"<td>{provides}</td><td>{depends}</td><td>{breaks}</td><td>{yields}</td></tr>"
         )
     out.append("</tbody></table>")
     return "\n".join(out)

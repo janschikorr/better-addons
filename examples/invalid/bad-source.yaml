@@ -1,6 +1,7 @@
 # Rejected: source must be 'path:line'.
-format: 1
+format: 2
 addon: OpenMap
 provides:
-  - slot: map.window
+  - slot: map.art
+    aspect: content
     source: "somewhere in Core.lua"

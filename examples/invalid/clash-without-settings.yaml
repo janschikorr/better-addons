@@ -1,0 +1,5 @@
+# Rejected: a clash must name the settings it depends on, or it is a Breaks.
+format: 2
+addon: OpenMap
+clashes:
+  - addon: Leatrix_Maps

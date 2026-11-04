@@ -1,0 +1,9 @@
+# Rejected: a slot cannot be yielded if it is never claimed.
+format: 2
+addon: OpenMap
+provides:
+  - slot: map.art
+    aspect: content
+yields_to:
+  - addon: MoveAny
+    slot: map.window
