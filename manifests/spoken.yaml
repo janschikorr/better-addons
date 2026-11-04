@@ -29,6 +29,20 @@ provides:
     kind: add
     source: "Spoken/Core.lua:112 LibDBIcon = { showInCompartment = true }"
 
+  - slot: keybinding
+    aspect: behaviour
+    via: native
+    kind: add
+    source: "Spoken/UI/Options.lua:43 _G.BINDING_NAME_SPOKEN_PLAYPAUSE"
+    reason: >
+      Found by tools/scan.py, not by hand: this entry was missing from the first
+      version of this manifest. Spoken declares four binding names - play/pause,
+      skip, stop and compendium - and applies them with SetBinding, clearing the
+      previous key first (Options.lua:617). The scan found the SetBinding call
+      in a file the manual pass had read for its settings and not for its
+      bindings.
+    note: "Keys: whatever the player assigns to the four Spoken actions."
+
   - slot: spoken:queue
     aspect: content
     kind: add
@@ -51,6 +65,13 @@ recommends:
     source: "Spoken/API.lua:255"
 
 unknown:
+  - >
+    This manifest was incomplete until a tool checked it. The keybinding entry
+    above came from tools/scan.py in phase 3; the manual pass read
+    UI/Options.lua for Spoken's settings and did not notice the four binding
+    declarations in the same file. Worth recording because the project's whole
+    argument is that a human reading the code produces a better manifest than a
+    scan - which is true on average and was false here.
   - >
     The format has no word for extending another addon's slot. Spoken writes
     rows into DialogueUI's settings window (API.lua:258) and buttons onto

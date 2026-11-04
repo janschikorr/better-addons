@@ -99,3 +99,29 @@ each one is a recurring slop pattern.
 - Phases and acceptance criteria come from the project plan. Do not skip ahead:
   phase 3's scan script is validated against phase 2's hand-written manifests, so
   writing the script first would remove the only yardstick there is.
+
+## Using tools/scan.py
+
+The scan proposes manifests from code patterns. It is a suggestion tool with
+citations, never an author, and its output in `tests/proposed/` is not a
+manifest - every file says `proposed: true` for that reason.
+
+`tests/SCAN-REPORT.md` has the measurement: it finds 37% of what a human finds,
+and 46% of what it proposes is right. Read that report before relying on a
+proposal. Three things follow for anyone writing a manifest:
+
+- Use a proposal as a checklist of places to look, not as a draft to edit. Each
+  entry names the file and line that produced it, so confirming or rejecting one
+  is quick.
+- Expect it to miss the addons that matter most. Detectability follows coding
+  style, not scale: Questie scores 8/11 because it calls named APIs, MoveAny
+  2/14 because it drives 115 frames from a table. Frame-moving addons are
+  systematically under-reported.
+- Never take an aspect, a default, a `reason`, a `Yields-To` or a `Clashes` from
+  a proposal. The scan cannot see any of them; the `blind` list at the end of
+  `mapping/api-patterns.yaml` says why.
+
+When a pattern proves wrong, change it in `mapping/api-patterns.yaml`, say in
+its `note` what the measurement showed, and re-run `compare`. Demoting a pattern
+to `confidence: low` turns it into a question rather than deleting what it
+knows.

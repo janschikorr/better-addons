@@ -1,34 +1,453 @@
-# Better Addons - API pattern to slot mapping
+# Better Addons - code pattern to slot mapping
 #
-# Status: phase 3 fills this in. The shape is fixed here so the scan script and
-# the hand-written manifests of phase 2 can be compared field by field.
+# Each pattern is a claim of the form "this call, in this file, means that slot
+# is occupied this way". tools/scan.py applies them to an addon folder and
+# writes a proposed manifest in which every entry carries the file and line that
+# produced it - the same `source` discipline the hand-written manifests follow.
 #
-# Each entry maps a code pattern to a slot and an interaction kind:
-#   match     Lua pattern or regex found in the addon's source
-#   slot      the slot from spec/slots.yaml it implies
-#   kind      replace | hook | add | modify
-#   via       the way, when the pattern determines it
-#   confidence  high | medium | low - low means the scan script reports it as a
-#               question rather than an entry
-#   note      why this pattern implies that slot
+# Fields:
+#   id          stable name, used in the comparison report
+#   match       Python regular expression, searched line by line
+#   slot        the slot from spec/slots.yaml this implies
+#   aspect      content | geometry | style | behaviour
+#   kind        replace | hook | add | modify
+#   via         the way, when the pattern determines it
+#   confidence  high    the call cannot mean anything else
+#               medium  the call means this unless the context says otherwise
+#               low     reported as a question, never as an entry
+#   note        why the call implies the slot
+#
+# What no pattern can decide is listed under `blind` at the end of this file.
+# That list is the honest part: it is what a scan cannot replace.
 
 format: 1
 version: "0.1"
 
-patterns: []
+patterns:
+  # ---------------------------------------------------------------- minimap
+  - id: libdbicon-register
+    match: 'LibDBIcon[^\n]{0,40}:Register\('
+    slot: minimap.button
+    aspect: content
+    kind: add
+    via: LibDBIcon
+    confidence: high
+    note: Registering with LibDBIcon is the only thing that call does.
 
-# Example of the intended shape (not yet active):
-#
-# patterns:
-#   - match: "WorldMapFrame:SetParent"
-#     slot: map.window
-#     kind: replace
-#     via: native
-#     confidence: high
-#     note: Reparenting the map frame means taking ownership of it.
-#
-#   - match: "HereBeDragons:AddWorldMapIconMap"
-#     slot: map.pins
-#     kind: add
-#     via: HereBeDragons
-#     confidence: high
+  - id: libdatabroker-object
+    match: 'LibDataBroker-1\.1[^\n]{0,60}NewDataObject'
+    slot: minimap.button
+    aspect: content
+    kind: add
+    via: LibDataBroker
+    confidence: medium
+    note: >
+      A broker object usually becomes a minimap button, but only if a display
+      addon shows it. Medium because the button is not this addon's doing.
+
+  - id: minimap-shape
+    match: 'Minimap:Set(Mask|Size|Point)\(|MinimapCluster:Set(Size|Point|Scale)\('
+    slot: minimap.layout
+    aspect: geometry
+    kind: modify
+    confidence: high
+    note: Changing the minimap's mask, size or anchor is a geometry change.
+
+  # ---------------------------------------------------------------- map pins
+  - id: hbd-world-pins
+    match: 'AddWorldMapIconMap\('
+    slot: map.pins
+    aspect: content
+    kind: add
+    via: HereBeDragons
+    confidence: high
+    note: The HereBeDragons call for a world map pin.
+
+  - id: hbd-minimap-pins
+    match: 'AddMinimapIconMap\('
+    slot: minimap.pins
+    aspect: content
+    kind: add
+    via: HereBeDragons
+    confidence: high
+    note: The HereBeDragons call for a minimap pin.
+
+  - id: hbd-embedded-copy
+    match: 'LibStub\(\s*"HereBeDragons(?!-)[A-Za-z]'
+    slot: map.pins
+    aspect: content
+    kind: add
+    via: embedded-copy
+    confidence: high
+    note: >
+      A LibStub name starting with HereBeDragons but not the library's own name
+      is a renamed embedded copy, as in Questie's HereBeDragonsQuestie-2.0. Its
+      pin pool is separate from the shared one.
+
+  - id: native-map-dataprovider
+    match: 'WorldMapFrame:AddDataProvider\(|MapCanvasDataProviderMixin'
+    slot: map.pins
+    aspect: content
+    kind: add
+    via: native
+    confidence: high
+    note: >
+      Registering a data provider on the map canvas. On Forever this is the
+      choice Legacy Forever deliberately avoids for gamepad taint reasons, so
+      the scan should always surface it.
+
+  - id: map-frame-ownership
+    match: 'WorldMapFrame:Set(Parent|Size|Point)\('
+    slot: map.window
+    aspect: geometry
+    kind: modify
+    confidence: high
+    note: Moving or resizing the map frame is a geometry change to the window.
+
+  # ---------------------------------------------------------------- tracker
+  - id: tracker-suppress
+    match: 'ObjectiveTrackerFrame[^\n]{0,40}:Hide\(\)|QuestWatchFrame[^\n]{0,20}:Hide\(\)|HideWatchFrame'
+    slot: quest.tracker
+    aspect: content
+    kind: replace
+    confidence: medium
+    note: >
+      Hiding the native tracker means something else is meant to take its
+      place. Medium because hiding alone does not prove a replacement frame
+      exists; the scan reports this and any own tracker frame it finds.
+
+  - id: tracker-own-frame
+    match: 'CreateFrame\(\s*"Frame"\s*,\s*"[\w]*(QuestWatch|QuestTracker)[\w]*"'
+    slot: quest.tracker
+    aspect: content
+    kind: replace
+    via: replace-frame
+    confidence: medium
+    note: >
+      A named frame that calls itself a quest watch or quest tracker. Narrowed
+      after the first measurement: the old pattern also matched TrackerHost and
+      ObjectiveTrackerFrame2, which are a block inside the column and a dummy
+      for a settings panel. Neither is a replacement.
+
+  - id: tracker-block
+    match: 'TrackerHost|TrackerOrder|TrackerLock'
+    slot: quest.tracker.lines
+    aspect: content
+    kind: add
+    via: custom-block
+    confidence: medium
+    note: >
+      Three addons in the test set host their block in a TrackerHost.lua of
+      their own (Shortest Path, SkillUp, Legacy Forever), a convention rather
+      than an API. Medium: the file name is the only evidence.
+
+  # ---------------------------------------------------------------- tooltip
+  - id: tooltip-posthook
+    match: 'TooltipDataProcessor\.AddTooltipPostCall|hooksecurefunc\(\s*"?GameTooltip|GameTooltip:HookScript\(\s*"OnTooltipSet'
+    slot: tooltip.lines
+    aspect: content
+    kind: add
+    via: native
+    confidence: high
+    note: >
+      Hooking the game's tooltip, which is the only way to add lines to someone
+      else's tooltip.
+
+  - id: tooltip-ownlines
+    match: 'GameTooltip:Add(Double)?Line\('
+    slot: tooltip.lines
+    aspect: content
+    kind: add
+    via: native
+    confidence: low
+    note: >
+      Demoted from high after the first measurement: nearly every addon calls
+      AddLine to fill its OWN tooltip after SetOwner, which occupies no slot. It
+      occupies tooltip.lines only inside a hook on the game's tooltip, which the
+      pattern above catches and this one cannot distinguish. Reported as a
+      question.
+
+  # ---------------------------------------------------------------- audio
+  - id: tts-speak
+    match: 'C_VoiceChat\.SpeakText\(|\bSpeakText\('
+    slot: audio.tts
+    aspect: content
+    kind: add
+    via: SpeakText
+    confidence: high
+    note: The client's text-to-speech. Spoken does NOT use this; Forever_TTS does.
+
+  - id: sound-file
+    match: 'PlaySoundFile\('
+    slot: audio.sound
+    aspect: content
+    kind: add
+    confidence: low
+    note: >
+      Demoted from medium after the first measurement, which proposed
+      audio.sound for Overlord and Shortest Path - both play a click or an
+      alert, which occupies nothing. The pattern cannot tell a UI sound from a
+      narrator, so it asks instead of claiming.
+
+  # ---------------------------------------------------------------- cvars
+  - id: setcvar-nameplate
+    match: 'SetCVar\(\s*"nameplate'
+    slot: cvar.nameplate
+    aspect: behaviour
+    kind: modify
+    via: SetCVar
+    confidence: high
+    note: Writing a nameplate console variable.
+
+  - id: setcvar-camera
+    match: 'SetCVar\(\s*"camera'
+    slot: cvar.camera
+    aspect: behaviour
+    kind: modify
+    via: SetCVar
+    confidence: high
+    note: Writing a camera console variable.
+
+  - id: setcvar-map
+    match: 'SetCVar\(\s*"(mapFade|worldMap|questPOI|showQuestUnit)'
+    slot: cvar.map
+    aspect: behaviour
+    kind: modify
+    via: SetCVar
+    confidence: high
+    note: Writing a map console variable.
+
+  # ---------------------------------------------------------------- automation
+  - id: auto-accept
+    match: '\bAcceptQuest\(\)|\bConfirmAcceptQuest\(\)'
+    slot: auto.quest.accept
+    aspect: behaviour
+    kind: add
+    via: native
+    confidence: medium
+    note: >
+      Calling AcceptQuest. Medium: an addon may call it from a button the player
+      pressed, which is not automation. Whether it is automatic depends on the
+      caller, which no pattern can see.
+
+  - id: auto-turnin
+    match: '\bGetQuestReward\(|\bCompleteQuest\(\)'
+    slot: auto.quest.turnin
+    aspect: behaviour
+    kind: add
+    via: native
+    confidence: medium
+    note: As above, for handing a quest in.
+
+  - id: auto-gossip
+    match: 'C_GossipInfo\.SelectOption\(|\bSelectGossipOption\('
+    slot: auto.gossip.select
+    aspect: behaviour
+    kind: add
+    via: native
+    confidence: medium
+    note: As above, for choosing a gossip option.
+
+  - id: auto-loot
+    match: 'SetCVar\(\s*"autoLootDefault"'
+    slot: auto.loot
+    aspect: behaviour
+    kind: add
+    via: native
+    confidence: low
+    note: Looting calls appear in too many honest contexts to claim the slot.
+
+  # ---------------------------------------------------------------- bindings
+  - id: binding-claimed
+    match: '\bSetBinding\(|_G\.BINDING_NAME_'
+    slot: keybinding
+    aspect: behaviour
+    kind: add
+    via: native
+    confidence: high
+    note: >
+      Taking a key at runtime, or declaring a binding name. SetBindingClick was
+      removed from this pattern after the first measurement: it attaches a key
+      to the addon's own button and takes nothing from the player. Whether a
+      SetBinding call is guarded by a GetBindingKey check, as Aegis does, is
+      what the scan cannot see.
+
+  # ---------------------------------------------------------------- frames
+  - id: nameplate-watch
+    match: 'NAME_PLATE_UNIT_ADDED|NamePlateDriverFrame'
+    slot: ui.nameplates
+    aspect: content
+    kind: add
+    confidence: low
+    note: >
+      Demoted after the first measurement proposed ui.nameplates for four
+      addons that only watch the event (Muddy Boots, Overlord, QuestieTrace,
+      War Effort). Registering for the event is observation; occupying the slot
+      means drawing on the plate, which needs the pattern below.
+
+  - id: nameplate-draw
+    match: 'C_NamePlate\.GetNamePlateForUnit\('
+    slot: ui.nameplates
+    aspect: content
+    kind: add
+    via: native
+    confidence: high
+    note: >
+      Fetching the plate frame in order to put something on it. Questie's quest
+      icons go through this call.
+
+  - id: spellbook-frame
+    match: 'SpellBookFrame'
+    slot: spellbook.frame
+    aspect: content
+    kind: modify
+    confidence: low
+    note: >
+      Touching the spellbook frame says nothing about whether it is restyled,
+      resized or replaced. Reported as a question.
+
+  - id: trainer-frame
+    match: 'ClassTrainerFrame|TRAINER_(SHOW|UPDATE)'
+    slot: trainer.frame
+    aspect: content
+    kind: modify
+    confidence: low
+    note: As above, for the class trainer window.
+
+  # ---------------------------------------------------------------- hooks
+  - id: secure-hook
+    match: '\bhooksecurefunc\('
+    slot: null
+    aspect: null
+    kind: hook
+    confidence: low
+    note: >
+      Records that the addon hooks Blizzard functions, which SPEC.md 6.1 treats
+      as always compatible. The slot depends on what is hooked, which the
+      pattern does not know, so this produces a count for the quality report
+      rather than an entry.
+
+  # ------------------------------------------- added after the first measurement
+  - id: own-map-overlay
+    match: 'WorldMapFrame\.ScrollContainer|WorldMapFrame:GetCanvas\(\)|ScrollContainer\.Child'
+    slot: map.pins
+    aspect: content
+    kind: add
+    via: custom-overlay
+    confidence: medium
+    note: >
+      Reaching for the map canvas in order to put own frames on it. The first
+      run missed every overlay-based pin addon (Overlord, Muddy Boots, Shortest
+      Path, Legacy Forever) because it knew only HereBeDragons and the native
+      data provider.
+
+  - id: own-minimap-button
+    match: 'CreateFrame\(\s*"Button"[^\n]{0,60}Minimap|:SetParent\(\s*Minimap\s*\)'
+    slot: minimap.button
+    aspect: content
+    kind: add
+    via: native
+    confidence: medium
+    note: >
+      A button parented to the minimap without LibDBIcon, as Overlord and War
+      Effort do.
+
+  - id: quest-detail-frame
+    match: 'QuestFrame:|QuestFrameDetailPanel|QuestInfoFrame'
+    slot: quest.detail
+    aspect: content
+    kind: modify
+    confidence: medium
+    note: Touching the quest detail window.
+
+  - id: gossip-frame
+    match: 'GossipFrame:|GossipFrameGreetingPanel'
+    slot: quest.gossip
+    aspect: content
+    kind: modify
+    confidence: medium
+    note: Touching the gossip window.
+
+  - id: questlog-frame
+    match: 'QuestLogFrame:|QuestLogExFrame|QuestMapFrame:'
+    slot: quest.log
+    aspect: content
+    kind: modify
+    confidence: medium
+    note: Touching the quest log.
+
+  - id: tradeskill-frame
+    match: 'TradeSkillFrame'
+    slot: profession.frame
+    aspect: content
+    kind: modify
+    confidence: medium
+    note: >
+      Touching the professions window. Whether it is restyled or extended is
+      the aspect question no pattern answers.
+
+  - id: unitframe-move
+    match: 'PlayerFrame:Set(Point|Scale|Size)\(|TargetFrame:Set(Point|Scale|Size)\('
+    slot: ui.unitframe
+    aspect: geometry
+    kind: modify
+    confidence: high
+    note: >
+      Moving or scaling a unit frame. Claimed at the parent slot, as MoveAny's
+      hand-written manifest does, because an addon that moves one usually moves
+      several.
+
+  - id: actionbar-move
+    match: 'MainMenuBar:Set(Point|Scale|Size)\(|MultiBar[\w]*:Set(Point|Scale)\('
+    slot: ui.actionbar.layout
+    aspect: geometry
+    kind: modify
+    confidence: high
+    note: Moving or scaling the action bars.
+
+  - id: buffframe-move
+    match: 'BuffFrame:Set(Point|Scale|Size)\(|TemporaryEnchantFrame:Set'
+    slot: ui.buffs
+    aspect: geometry
+    kind: modify
+    confidence: high
+    note: Moving or scaling the buff frame.
+
+  - id: chatframe-touch
+    match: 'ChatFrame1:Set(Point|Size|Scale)\(|FCF_SetWindowAlpha'
+    slot: chat.frame
+    aspect: geometry
+    kind: modify
+    confidence: medium
+    note: Moving or resizing a chat window.
+
+# What no pattern can decide. tools/scan.py prints this list with every report,
+# so a proposed manifest is never mistaken for a finished one.
+blind:
+  - >
+    Aspect. The most important field for verdicts, and the least visible in a
+    call. SetPoint can be geometry or part of building a replacement; SetTexture
+    can be style or the content of a new frame. Only ClassicUI's own settings
+    names, read by a human, showed that its entries were style and not content.
+  - >
+    Whether an entry is optional, and its default. These live in a defaults
+    table under a key no pattern knows (Questie: trackerEnabled,
+    enableMapIcons; ClassicUI: over a hundred switches in Defaults.lua). A wrong
+    default inverts the verdict for a fresh install.
+  - >
+    reason and note. Free text by design (SPEC.md 8): why an addon avoids a
+    native data provider, why a frame is hidden rather than reparented. Every
+    sentence of it came from a code comment or from reading the function around
+    the call.
+  - >
+    Yields-To and Clashes. Both are statements about another addon, living in
+    compatibility code that names it. A pattern could find the name; it could
+    not tell whether the addon yields completely, partly, or only reads.
+  - >
+    The nearest useful parent. MoveAny touches about 115 frames; its manifest
+    claims ui.unitframe once. Choosing the parent is a judgement about what the
+    addon is for, and a scan would emit 115 entries.
+  - >
+    Whether a call is reached. A pattern sees AcceptQuest in the file, not
+    whether it runs automatically, behind a setting, or only from a button the
+    player pressed.
