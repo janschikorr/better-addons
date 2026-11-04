@@ -265,11 +265,63 @@ slots:
     exclusive: true
     ways: [native, replace-frame, retexture]
 
+  ui.unitframe.party:
+    area: ui
+    title: Party frames
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+
   ui.actionbar.layout:
     area: ui
     title: Action bar layout
     exclusive: true
     ways: [native, replace-frame, retexture]
+
+  ui.castbar:
+    area: ui
+    title: Cast bars
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+
+  ui.nameplates:
+    area: ui
+    title: Nameplates
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+
+  ui.micromenu:
+    area: ui
+    title: Micro menu
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+    note: The row of small buttons for character, spellbook, quest log and so on.
+
+  ui.bagbar:
+    area: ui
+    title: Bag bar
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+
+  ui.buffs:
+    area: ui
+    title: Buff and debuff bars
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+
+  ui.xpbar:
+    area: ui
+    title: Experience and reputation bars
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+
+  tooltip.frame:
+    area: tooltip
+    title: Tooltip appearance
+    exclusive: true
+    ways: [native, retexture]
+    note: >
+      The look of the tooltip frame itself. Separate from tooltip.lines, which
+      several addons can add to at once.
 
   chat.frame:
     area: chat

@@ -1,0 +1,68 @@
+# Hand-written manifest, phase 2. Read against Legacy Forever v1.0.12.
+#
+# Draws its own frames on the world map and adds a block to the objective
+# tracker column. It deliberately avoids Blizzard's pin system: adding a data
+# provider, acquiring a pin or adding an overlay frame would put addon values
+# into the secure walk that Forever's gamepad cursor performs each frame, and
+# taint its later protected calls (UI/MapCanvas.lua:5-13).
+format: 1
+addon: LegacyForever
+toc: LegacyForever.toc
+versions: ">=1.0.12"
+interface: [16001]
+title: Legacy Forever
+
+provides:
+  - slot: map.pins
+    via: custom-overlay
+    kind: add
+    source: "LegacyForever/UI/MapCanvas.lua:4 frames of its own, with nothing written into the map"
+    note: >
+      Not via native pins or HereBeDragons, and that is a decision rather than
+      an omission - see the header of MapCanvas.lua on gamepad taint.
+
+  - slot: quest.tracker.lines
+    via: custom-block
+    kind: add
+    source: "LegacyForever/UI/TrackerHost.lua:9 Attach(module)"
+    note: >
+      Reads where Questie's own list sits and moves its shared column clear of
+      it, without touching Questie's frame (UI/TrackerQuestie.lua:3-6).
+
+  - slot: legacyforever:api.completion
+    kind: add
+    source: "LegacyForever/Core/API.lua:3 LegacyForever.API"
+    note: Zone completion and unfinished Legacy objectives, for other addons.
+
+  - slot: legacyforever:tracker.host
+    kind: add
+    source: "LegacyForever/UI/TrackerHost.lua:9 Attach, SetContainer, IsTruncated"
+    note: A shared tracker column that other modules can attach a frame to.
+
+recommends:
+  - addon: ShortestPathForever
+    note: Routes are handed to it with an owner tag so it can tell them from the player's own.
+    source: "LegacyForever/Integrations/Navigate.lua:5 OWNER = \"LegacyForever\""
+  - addon: Questie
+    source: "LegacyForever/UI/TrackerQuestie.lua:3"
+  - addon: QuestieDB
+    source: "LegacyForever/LegacyForever.toc:12 OptionalDeps"
+  - addon: AtlasLootClassic
+    source: "LegacyForever/Integrations/AtlasLoot.lua:1"
+
+unknown:
+  - >
+    Why a way was chosen is not recordable. 'map.pins=custom-overlay' says how
+    the pins are drawn but not that the native path was rejected on purpose, to
+    avoid tainting the gamepad cursor's secure walk. Without that, a later
+    reviewer - or a scan script - reads the custom overlay as the lazy option,
+    when it is the careful one. A 'reason' field on a provide would fix this,
+    and the same information is what the quality guide needs.
+  - >
+    Reading another addon's layout is not an interaction with a slot. Legacy
+    Forever looks up where Questie's tracker frame sits and places its own
+    column clear of it. Nothing is modified, so no slot is occupied, yet the
+    behaviour depends entirely on Questie's frame - if Questie changes it, this
+    breaks. The format records no such one-way dependency on another addon's
+    internals, and Depends would be wrong: the addon works fine without
+    Questie.

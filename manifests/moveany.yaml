@@ -1,0 +1,136 @@
+# Hand-written manifest, phase 2. Read against MoveAny 1.14.5 (MoveAny.toc,
+# the Forever .toc of seven).
+#
+# MoveAny is the clearest case against the slot model as drafted: it occupies no
+# slot in the sense of "what this part of the interface shows". It changes where
+# roughly 130 named Blizzard frames sit and how large they are, and nothing else.
+# See the unknown list.
+format: 1
+addon: MoveAny
+toc: MoveAny.toc
+versions: ">=1.14.5"
+interface: [16001]
+title: MoveAny by D4KiR
+notes: >
+  Unlocks, moves and scales existing Blizzard frames via hooksecurefunc,
+  SetMovable, SetPoint and SetScale. It never replaces a frame, so it coexists
+  with addons that change what a frame shows - but it collides with anything
+  else that places the same frame.
+
+provides:
+  # Geometry of frames that have a slot in the registry. Every entry is
+  # kind: modify - MoveAny changes position and scale, never content.
+  - slot: map.window
+    via: native
+    kind: modify
+    source: "MoveAny/moveframes.lua:5 tinsert(MAFRAMES, \"WorldMapFrame\")"
+    note: >
+      OpenMap stands down from this slot when MoveAny is installed
+      (OpenMap/Map/Window.lua:200), so the two do not in fact fight.
+
+  - slot: quest.detail
+    via: native
+    kind: modify
+    source: "MoveAny/moveframes.lua:3 QuestFrame in MAFRAMES"
+
+  - slot: quest.gossip
+    via: native
+    kind: modify
+    source: "MoveAny/moveframes.lua:3 GossipFrame in MAFRAMES"
+
+  - slot: quest.log
+    via: native
+    kind: modify
+    source: "MoveAny/moveframes.lua:3 QuestLogFrame, QuestLogDetailFrame, QuestLogPopupDetailFrame"
+
+  - slot: spellbook.frame
+    via: native
+    kind: modify
+    source: "MoveAny/moveframes.lua:3 SpellBookFrame, PlayerSpellsFrame"
+
+  - slot: profession.frame
+    via: native
+    kind: modify
+    source: "MoveAny/moveframes.lua:3 TradeSkillFrame, CraftFrame, ProfessionsFrame"
+
+  - slot: journal.dungeon
+    via: native
+    kind: modify
+    source: "MoveAny/moveframes.lua:3 EncounterJournal in MAFRAMES"
+
+  - slot: minimap.layout
+    via: native
+    kind: modify
+    optional: true
+    module: MINIMAP
+    source: "MoveAny/ele/minimap.lua:6 IsEnabled(\"MINIMAP\", false)"
+    note: >
+      Hides MinimapToggleButton and MinimapBorderTop, and hooks SetAlpha.
+      Stands down entirely when ElvUI is loaded (ele/minimap.lua:7).
+
+  - slot: ui.actionbar.layout
+    via: native
+    kind: modify
+    source: "MoveAny/ele/actionbars.lua:1"
+
+  - slot: ui.unitframe.party
+    via: native
+    kind: modify
+    source: "MoveAny/ele/partyframe.lua:1"
+
+  - slot: ui.buffs
+    via: native
+    kind: modify
+    source: "MoveAny/ele/buffbar.lua:1 and ele/debuffbar.lua:1"
+
+  - slot: ui.micromenu
+    via: native
+    kind: modify
+    source: "MoveAny/ele/micromenu.lua:1"
+
+  - slot: ui.bagbar
+    via: native
+    kind: modify
+    source: "MoveAny/ele/bagbar.lua:1"
+
+  - slot: chat.frame
+    via: native
+    kind: modify
+    source: "MoveAny/moveframes.lua:3 ChatConfigFrame, ChannelFrame"
+
+modules:
+  minimap.layout:
+    title: Minimap element
+    default: false
+
+unknown:
+  - >
+    Geometry is a dimension of its own, not a slot. MoveAny changes where a
+    frame sits and how big it is; OpenMap changes what the map draws; DialogueUI
+    replaces the quest frame outright. All three currently land in the same
+    slots with only 'kind' to tell them apart, and kind is not part of the
+    verdict rules at all (SPEC.md section 5). The result is wrong in both
+    directions: MoveAny plus ClassicUI Forever on minimap.layout is predicted a
+    conflict although one moves and the other retextures, while MoveAny plus
+    DialogueUI on quest.detail is a real risk that nothing flags. Candidate for
+    v0.2: make the verdict depend on the pair of interaction kinds, or split
+    each frame slot into content and geometry.
+  - >
+    Conditional occupation, second case: MoveAny's minimap element returns
+    immediately when ElvUI is loaded (ele/minimap.lua:7), exactly as OpenMap
+    stands down for MoveAny. Two independent addons in this test set already
+    implement "yield to that addon", which makes it the strongest candidate for
+    a v0.2 field.
+  - >
+    Around 115 of the roughly 130 frames MoveAny moves have no slot in the
+    registry - trade, mail, auction house, calendar, guild, collections, arena,
+    taxi and so on. Adding a slot per frame would double the registry for a
+    single addon and would say nothing about compatibility, because nothing
+    else in the test set touches those frames. Recorded here instead: the
+    registry is not a map of the interface, it is a map of contested places.
+  - >
+    MoveAny declares the same frame lists for every game version and filters
+    them at runtime (moveframes.lua:17 MAFRAMESONLYRETAIL, :23
+    MAFRAMESNOTRETAIL). The manifest is per .toc, but this addon's real
+    behaviour is decided by GetWoWBuild() at load time, not by which .toc the
+    client picked. Per-.toc manifests cannot express that.
