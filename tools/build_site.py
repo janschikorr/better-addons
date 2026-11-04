@@ -168,7 +168,8 @@ LAYOUT = """<!doctype html>
 {body}
 </main>
 <footer>
-  <p>Generated from <a href="{repo}">the repository</a>. Spec version {spec_version}.</p>
+  <p>Generated from <a href="{repo}">the repository</a>. Spec version {spec_version}.
+     Licensed <a href="{repo}/blob/main/LICENSE">MIT</a>.</p>
 </footer>
 </body>
 </html>

@@ -42,3 +42,10 @@ the manifests already written.
 - [Slot registry](slots/) — every slot, and who occupies it
 - [Specification](spec/) — the format in full
 - [For developers](developers/) — a manifest in five minutes
+
+## Licence
+
+Everything here is MIT licensed: the specification, the tooling and the checker
+addon. Quote the spec in your own documentation, vendor the schema, reimplement
+the checker in another language — none of it needs permission. A format only
+works if adopting it is frictionless.

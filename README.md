@@ -102,4 +102,10 @@ game, on the addon files alone.
 
 ## Licence
 
-Not yet decided. Until it is, treat the contents as all rights reserved.
+[MIT](LICENSE) — specification, tooling and addon alike. Use it, change it, ship
+it, including in closed and commercial projects. Keep the copyright notice, and
+there is no warranty.
+
+The format is meant to be adopted, so adopting it has to be frictionless: quote
+the specification in your own documentation, vendor the schema, reimplement the
+checker in another language. None of that needs permission.
