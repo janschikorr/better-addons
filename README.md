@@ -57,6 +57,8 @@ better-addons/
 ├── site/                     info site, published with GitHub Pages
 ├── tools/
 │   ├── validate.py           schema and registry validation
+│   ├── inventory.py          what is installed, read from the .toc files
+│   ├── api_surface.py        the game's API surface, from wow-ui-source
 │   ├── build_site.py         generates the site from spec and manifests
 │   ├── scan.py               scan script (phase 3)
 │   └── build-data.py         generates the Lua data for the checker addon (phase 5)

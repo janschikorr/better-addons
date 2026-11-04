@@ -5,3 +5,6 @@ __pycache__/
 tests/results/*.txt
 tests/results/*.json
 !tests/results/.gitkeep
+
+# Derived from wow-ui-source; regenerate with tools/api_surface.py
+data/api/

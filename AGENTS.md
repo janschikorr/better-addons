@@ -41,6 +41,24 @@ judged is the result, not the tool.
 6. Where the code is ambiguous, **say so instead of deciding**. A flagged
    uncertainty is a correct answer; a confident wrong slot is not.
 
+## Checking an API call
+
+The game's own interface code is mirrored at
+[Gethe/wow-ui-source](https://github.com/Gethe/wow-ui-source); the `forever`
+branch is the version targeted here (1.60.1.70790 = Interface 16001).
+`tools/api_surface.py` extracts its API surface.
+
+Do not guess whether a function exists. Check it, and respect what the check can
+prove:
+
+- A `C_*` call absent from the extracted surface **does not exist**. Report it.
+- A global call absent from it proves nothing: the old FrameXML globals are
+  undocumented. If it is also absent from the UI code identifiers, say it is
+  suspect - do not call it an error.
+- Forever is an API superset of Retail, so "this came from Retail" is almost
+  never the explanation. It carries both the classic globals and the modern
+  namespaces; prefer the `C_*` namespace where both exist.
+
 ## Quality rules for addon code
 
 These are the rules the scan script and `luacheck` check for. They exist because
