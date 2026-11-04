@@ -40,9 +40,50 @@ slots:
     exclusive: true
     ways: [native, replace-frame]
     note: >
-      Who owns the map frame: size, border, zoom behaviour, and whether the
-      Blizzard map is used at all. Two providers means one map fails to open,
-      flickers, or sits behind the other.
+      The frame itself: size, position, title bar, resize grips. Separate from
+      what is drawn inside it. Two providers means the window jumps between
+      two remembered places, or fights over its scale.
+
+  map.art:
+    area: map
+    title: Map artwork
+    exclusive: true
+    ways: [native, stitched, overlay]
+    note: >
+      What the canvas shows: the zone image, terrain, stitched continents. The
+      loser of this slot draws underneath the winner and is simply not seen -
+      its work still costs frame time. Separated from map.window after reading
+      OpenMap, which owns the artwork while deliberately leaving the window to
+      another addon.
+
+  map.view:
+    area: map
+    title: Map view and zoom
+    exclusive: true
+    ways: [native, stitched]
+    note: >
+      Where the view sits and how far it zooms, including remembered zoom per
+      map and jumps to a location. Two providers means the view snaps back and
+      forth while panning.
+
+  map.label:
+    area: map
+    title: Zone label on the map
+    exclusive: true
+    ways: [native]
+    note: >
+      Blizzard's area label, naming the zone under the cursor. Replacing its
+      script is the usual way in, so the addon that does it last wins - which
+      makes the result depend on login order.
+
+  map.coords:
+    area: map
+    title: Coordinate readout
+    exclusive: true
+    ways: [native, SetCVar]
+    note: >
+      Player and cursor coordinates on the map. Two providers means two
+      readouts, often overlapping in the same corner.
 
   map.pins:
     area: map
@@ -70,9 +111,10 @@ slots:
 
   map.legend:
     area: map
-    title: Legend and labels
+    title: Map legend
     exclusive: false
     ways: [native]
+    note: Entries in the map's legend or key.
 
   # ------------------------------------------------------------------ Minimap
   minimap.layout:
