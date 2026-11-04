@@ -48,6 +48,31 @@ def load_registry() -> tuple[dict, set[str]]:
     return registry, set(registry.get("slots") or {})
 
 
+def check_ways(manifest: dict, registry: dict) -> list[str]:
+    """A way must be one the registry lists for that slot.
+
+    Added after bundle 3, where 'via: custom-frame' on journal.dungeon passed
+    unnoticed although the registry lists no such way. The way is the entry's
+    claim about how the slot is occupied, and collisions are decided partly by
+    it, so an unlisted way is an unchecked claim.
+    """
+    problems = []
+    slots = registry.get("slots") or {}
+    for entry in manifest.get("provides") or []:
+        if not isinstance(entry, dict):
+            continue
+        name, way = entry.get("slot"), entry.get("via")
+        if not name or not way or name not in slots:
+            continue
+        allowed = (slots[name] or {}).get("ways") or []
+        if allowed and way not in allowed:
+            problems.append(
+                f"provides: slot '{name}' has no way '{way}' "
+                f"(registry lists: {', '.join(allowed)})"
+            )
+    return problems
+
+
 def slot_references(manifest: dict) -> list[tuple[str, str]]:
     """Every slot name the manifest mentions, with the field it came from."""
     found: list[tuple[str, str]] = []
@@ -151,7 +176,7 @@ def check_yields(manifest: dict) -> list[str]:
     return problems
 
 
-def validate_file(path: Path, validator: Draft202012Validator, known: set[str]) -> list[str]:
+def validate_file(path: Path, validator: Draft202012Validator, known: set[str], registry: dict) -> list[str]:
     try:
         manifest = load_yaml(path)
     except yaml.YAMLError as error:
@@ -165,6 +190,7 @@ def validate_file(path: Path, validator: Draft202012Validator, known: set[str]) 
         problems.append(f"{where}: {error.message}")
     if not problems:
         problems += check_registry(manifest, known)
+        problems += check_ways(manifest, registry)
         problems += check_modules(manifest)
         problems += check_hierarchy(manifest, known)
         problems += check_yields(manifest)
@@ -211,7 +237,7 @@ def main() -> int:
     if args.files:
         print("\nfiles")
         for path in args.files:
-            problems = validate_file(path.resolve(), validator, known)
+            problems = validate_file(path.resolve(), validator, known, registry)
             ok &= report(path.resolve(), problems, expect_failure=False)
         return 0 if ok else 1
 
@@ -228,7 +254,7 @@ def main() -> int:
             continue
         for path in paths:
             total += 1
-            ok &= report(path, validate_file(path, validator, known), expect_failure=expect_failure)
+            ok &= report(path, validate_file(path, validator, known, registry), expect_failure=expect_failure)
 
     print(f"\n{total} file(s) checked - {'all as expected' if ok else 'FAILURES above'}")
     return 0 if ok else 1

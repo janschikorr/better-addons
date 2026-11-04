@@ -1,0 +1,71 @@
+# Hand-written manifest, phase 2, format 2. Read against Aegis Instance Journal
+# 0.38.0.
+#
+# Worth reading as a quality example before anything else: the .toc credits
+# Alex Brandson and the Alex Atlas Loot contributors by name, names the map
+# author, the painter and the translator, states "made with the help of Claude
+# AI" in X-Credits and points at CREDITS.md. This is an AI-assisted addon that
+# attributes everything it borrowed - exactly the standard the project's quality
+# guide asks for, and the reason the guide judges the result and not the tool.
+format: 2
+addon: Aegis_Forever_Instance_Journal
+toc: Aegis_Forever_Instance_Journal.toc
+versions: ">=0.38.0"
+interface: [16001]
+title: Aegis Instance Journal
+
+provides:
+  - slot: journal.dungeon
+    aspect: content
+    via: standalone-frame
+    kind: add
+    source: "Aegis_Forever_Instance_Journal/Core/Init.lua:32"
+    reason: >
+      Its own window rather than a replacement of a native one: Forever has no
+      retail-style encounter journal, so there is nothing to replace. Shares
+      the slot with ForeverDungeonJournal - see the unknown list.
+
+  - slot: keybinding
+    aspect: behaviour
+    via: native
+    kind: add
+    source: "Aegis_Forever_Instance_Journal/Core/Init.lua:51 SetBinding(DEFAULT_KEY, BINDING)"
+    reason: >
+      Claims Shift-J by itself, but only when the player has no binding for the
+      action yet (Core/Init.lua:45 GetBindingKey check). The guard is what makes
+      this acceptable; an addon that overwrote an existing binding would be a
+      quality finding.
+    note: "Key claimed: Shift-J."
+
+  - slot: data.items
+    aspect: content
+    via: bundled
+    kind: add
+    source: "Aegis_Forever_Instance_Journal/Data/Instances/BlackrockDepths.lua:1"
+    reason: >
+      Loot tables per instance, with source and licence named in the .toc and
+      in CREDITS.md.
+
+recommends:
+  - addon: Pawn
+    source: "Aegis_Forever_Instance_Journal/Aegis_Forever_Instance_Journal.toc:6 OptionalDeps"
+  - addon: Syndicator
+    source: "Aegis_Forever_Instance_Journal/Aegis_Forever_Instance_Journal.toc:6 OptionalDeps"
+  - addon: Baganator
+    source: "Aegis_Forever_Instance_Journal/Aegis_Forever_Instance_Journal.toc:6 OptionalDeps"
+
+unknown:
+  - >
+    Two addons here answer the same question with separate windows, and the
+    format calls that compatible. This one and ForeverDungeonJournal both
+    provide journal.dungeon as added content in their own frames, so no rule
+    fires. Nothing is broken; the player simply has two dungeon journals, two
+    sets of loot data in memory and two places to look. OpenMap's manifest
+    raised the same point about duplicated function. The verdict "compatible"
+    is correct and unhelpful, which is an argument for the info site carrying
+    an overlap note that the verdict rules deliberately do not.
+  - >
+    A key binding is claimed per key, not per slot. The new keybinding slot
+    records that this addon takes a key and names it in a note, but a tool
+    cannot compare "Shift-J" against another addon's "Shift-J" without parsing
+    prose. The slot wants a parameter. See spec/CHANGELOG.md.

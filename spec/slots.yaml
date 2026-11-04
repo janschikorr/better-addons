@@ -93,7 +93,7 @@ slots:
     area: map
     title: Pins on the world map
     exclusive: false
-    ways: [native, HereBeDragons, custom-overlay]
+    ways: [native, HereBeDragons, embedded-copy, custom-overlay]
     note: >
       Quest, gathering and target pins. Additive as long as everyone uses the
       same way. A custom overlay on top of a foreign map drifts if that map
@@ -125,7 +125,7 @@ slots:
     area: minimap
     title: Minimap shape and position
     exclusive: true
-    ways: [native, replace-frame]
+    ways: [native, replace-frame, retexture]
     note: >
       Shape, size, position, border and button ring. Two providers means
       displaced or duplicated buttons.
@@ -134,13 +134,13 @@ slots:
     area: minimap
     title: Pins on the minimap
     exclusive: false
-    ways: [native, HereBeDragons]
+    ways: [native, HereBeDragons, embedded-copy, custom-overlay]
 
   minimap.button:
     area: minimap
     title: Button on the minimap ring
     exclusive: false
-    ways: [native, LibDBIcon]
+    ways: [native, LibDBIcon, LibDataBroker]
     note: Additive, but every button costs space. A common source of slop.
 
   # ------------------------------------------------------- Quests, dialogue
@@ -202,7 +202,7 @@ slots:
     area: spellbook
     title: Spellbook frame
     exclusive: true
-    ways: [native, replace-frame]
+    ways: [native, replace-frame, retexture]
 
   spellbook.tab:
     area: spellbook
@@ -214,13 +214,13 @@ slots:
     area: profession
     title: Profession frame
     exclusive: true
-    ways: [native, replace-frame]
+    ways: [native, replace-frame, retexture]
 
   profession.sidebar:
     area: profession
     title: Sidebar in the profession frame
     exclusive: false
-    ways: [native]
+    ways: [native, custom-overlay]
 
   profession.recipe.lines:
     area: profession
@@ -244,7 +244,7 @@ slots:
     area: journal
     title: Dungeon entrances on the map
     exclusive: false
-    ways: [native, HereBeDragons]
+    ways: [native, custom-overlay]
 
   # ------------------------------------------------------ Overall interface
   ui:
@@ -340,7 +340,7 @@ slots:
     area: chat
     title: Chat frame
     exclusive: true
-    ways: [native, replace-frame]
+    ways: [native, replace-frame, retexture]
 
   chat.message:
     area: chat
@@ -362,7 +362,7 @@ slots:
     area: audio
     title: Additional sounds
     exclusive: false
-    ways: [native]
+    ways: [native, bundled]
 
   audio.mute:
     area: audio
@@ -431,7 +431,7 @@ slots:
     area: data
     title: Zone and coordinate data
     exclusive: false
-    ways: [native, HereBeDragons]
+    ways: [bundled]
 
   data.quests:
     area: data
@@ -447,3 +447,29 @@ slots:
     title: Item and recipe data
     exclusive: false
     ways: [bundled]
+
+  # Added in bundle 3. Aegis Instance Journal sets a key binding by itself when
+  # the player has none (Core/Init.lua:51 SetBinding(DEFAULT_KEY, BINDING)), and
+  # two addons both reaching for Shift-J is a conflict no UI slot describes.
+  keybinding:
+    area: input
+    title: Key bindings claimed automatically
+    exclusive: false
+    ways: [native]
+    note: >
+      The real unit here is the single key, not the slot: two addons that each
+      bind a key only conflict when it is the same key. Recorded as one
+      non-exclusive slot, with the key named in the entry's note, until the
+      format can carry a parameter. See spec/CHANGELOG.md.
+
+  trainer.frame:
+    area: trainer
+    title: Class trainer window
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+
+  trainer.list:
+    area: trainer
+    title: Rows in the class trainer window
+    exclusive: false
+    ways: [native, custom-overlay]

@@ -1,0 +1,46 @@
+# Hand-written manifest, phase 2, format 2. Read against DungeonJournal 1.6.6.
+format: 2
+addon: ForeverDungeonJournal
+toc: ForeverDungeonJournal.toc
+versions: ">=1.6.6"
+interface: [16001]
+title: DungeonJournal
+notes: Boss, loot and quest journal for Classic dungeons.
+
+provides:
+  - slot: journal.dungeon
+    aspect: content
+    via: standalone-frame
+    kind: add
+    source: "ForeverDungeonJournal/Core/Core.lua:1"
+
+  - slot: keybinding
+    aspect: behaviour
+    via: native
+    kind: add
+    source: "ForeverDungeonJournal/Bindings.xml:1"
+    note: >
+      Declares a binding in Bindings.xml rather than calling SetBinding, so the
+      player assigns the key. The quieter of the two approaches in this set.
+
+  - slot: data.items
+    aspect: content
+    via: bundled
+    kind: add
+    source: "ForeverDungeonJournal/SOURCES.txt:1"
+    reason: >
+      Sources are named in SOURCES.txt and the design in ARCHITECTURE.md, both
+      shipped with the addon. Together with Aegis this makes two addons in the
+      set that document their data provenance in the folder itself.
+
+unknown:
+  - >
+    See aegis-instance-journal.yaml: this addon and Aegis both fill
+    journal.dungeon with their own windows and their own copy of the loot data.
+    Compatible by the rules, duplicated in practice.
+  - >
+    Two addons claim the keybinding slot by opposite means - Bindings.xml here,
+    SetBinding at load in Aegis - and the format records both as
+    'keybinding/native'. The way should distinguish them: declaring a binding
+    the player must assign is not the same act as taking a key. Candidate for
+    v0.3: ways 'declared' and 'claimed'.

@@ -1,0 +1,62 @@
+# Hand-written manifest, phase 2, format 2. Read against DialogueUI.
+#
+# Replaces the quest and gossip windows wholesale, and carries a documented
+# provider interface so other addons can plug into them - fourteen named
+# integrations live in Code/SupportedAddOns/.
+format: 2
+addon: DialogueUI
+toc: DialogueUI.toc
+interface: [16001]
+title: DialogueUI
+
+provides:
+  - slot: quest.detail
+    aspect: content
+    via: replace-frame
+    kind: replace
+    source: "DialogueUI/Code/Dialogue/DialogueUI.lua:1"
+
+  - slot: quest.gossip
+    aspect: content
+    via: replace-frame
+    kind: replace
+    source: "DialogueUI/Code/Dialogue/DialogueUI.lua:1"
+
+  - slot: dialogueui:provider.voiceover
+    aspect: content
+    kind: add
+    source: "DialogueUI/Code/SupportedAddOns/VoiceoverPublic.lua:1 Implementation Guide"
+    reason: >
+      A documented provider contract, not an accident: an addon supplies name,
+      doesFileExist(interactionType, id, ...) and playFile(...), for
+      interactionType "quest" with "detail", "progress" or "completion", or
+      "gossip". This is the clearest example in the whole test set of an addon
+      publishing a seam on purpose, and it is what the format's namespaced
+      slots are for.
+
+  - slot: dialogueui:settings
+    aspect: content
+    kind: add
+    source: "DialogueUI/Code/Settings/Settings.lua:1 DialogueUIOptions"
+    note: >
+      Spoken adds its own rows here (Spoken/API.lua:258
+      DialogueUIOptions:Add(build)). See the unknown list in spoken.yaml: the
+      format has no keyword for an addon extending another addon's slot.
+
+recommends:
+  - addon: Spoken
+    note: >
+      One of fourteen named integrations in Code/SupportedAddOns/, alongside
+      BtWQuests, Pawn, Rematch, Wholly, ChattyLittleNpc and several translation
+      addons. Each is a file, not a special case in the core.
+    source: "DialogueUI/Code/SupportedAddOns/VoiceoverPublic.lua:1"
+
+unknown:
+  - >
+    Fourteen integration files mean fourteen compatibility statements, and the
+    format can only record them as Recommends. Code/SupportedAddOns/ names
+    BtWQuests, ChattyLittleNpc, CzechQuests, InteractiveWormholes,
+    MultiLanguage, Pawn, Platine1AddOns, Rematch, Roleplay, TranslatorPublic,
+    VoiceoverPublic, Wholly, WorldFrameAddOns and WowUkrainizer. Only two are
+    installed here, so the manifest cannot be checked against the other twelve -
+    a reminder that a manifest is only as good as the folder it was written in.

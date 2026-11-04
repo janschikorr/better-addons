@@ -1,0 +1,83 @@
+# Hand-written manifest, phase 2, format 2. Read against SkillUp Forever v1.0.9.
+#
+# The third installed member of the Forever family (see
+# shortestpathforever.yaml): same byte-identical UI/ForeverFamily.lua, same
+# TrackerHost arrangement.
+format: 2
+addon: SkillUpForever
+toc: SkillUpForever.toc
+versions: ">=1.0.9"
+interface: [16001]
+title: SkillUp Forever
+notes: >
+  Required skill, colour thresholds and skill-up chance for every recipe in the
+  Professions window.
+
+provides:
+  - slot: profession.recipe.lines
+    aspect: content
+    via: native
+    kind: add
+    source: "SkillUpForever/UI/RecipeList.lua:1"
+    reason: >
+      Adds columns to the rows of the native professions window rather than
+      replacing it, so it does not contend with an addon that restyles the frame
+      - ClassicUI Forever restyles profession.frame with aspect style.
+
+  - slot: profession.sidebar
+    aspect: content
+    via: custom-overlay
+    kind: add
+    source: "SkillUpForever/UI/DetailsBar.lua:1"
+
+  - slot: tooltip.lines
+    aspect: content
+    via: native
+    kind: add
+    source: "SkillUpForever/UI/Tooltip.lua:1"
+
+  - slot: quest.tracker.lines
+    aspect: content
+    via: custom-block
+    kind: add
+    source: "SkillUpForever/UI/TrackerHost.lua:1"
+    note: >
+      Shopping list and route as a tracker block, keeping clear of Questie the
+      same way Shortest Path does (UI/TrackerQuestie.lua).
+
+  - slot: map.route
+    aspect: content
+    via: custom-overlay
+    kind: add
+    source: "SkillUpForever/UI/Route.lua:1"
+    note: The route to the next trainer or vendor.
+
+  - slot: trainer.list
+    aspect: content
+    via: native
+    kind: add
+    source: "SkillUpForever/Integrations/Trainer.lua:1"
+
+recommends:
+  - addon: Questie
+    source: "SkillUpForever/Integrations/Questie.lua:1"
+  - addon: AtlasLootClassic
+    source: "SkillUpForever/Integrations/AtlasLoot.lua:1"
+  - addon: ShortestPathForever
+    note: Both members of the Forever family; shares the tracker column arrangement.
+    source: "SkillUpForever/UI/ForeverFamily.lua:5"
+
+unknown:
+  - >
+    Licence and provenance are in the .toc and in THIRD_PARTY.md
+    ('X-License: GPL-3.0-or-later', 'X-Website'), and the format has no field
+    for either. For the quality guide this is the most important metadata an
+    addon can carry, and three addons in this set already declare it in their
+    own X- fields. Better Addons should read X-License rather than add one.
+  - >
+    Five addons in this set now add a block to the tracker column
+    (this one, Shortest Path, Legacy Forever, plus Questie and ClassicUI
+    replacing the frame itself). quest.tracker.lines is additive, so no verdict
+    fires, but three of them independently implement "keep clear of Questie" in
+    a TrackerQuestie.lua of their own. That is a convention the format could
+    record and does not.

@@ -114,3 +114,81 @@ First draft: `Provides`, `Depends`, `Recommends`, `Breaks`, slot expressions
 with ways, version constraints, optional parts and namespaces. Written before
 any addon code had been read, which is visible in hindsight — every 0.2 change
 above corrects something that reading four addons disproved.
+
+## 0.2.1 - bundle 3 of phase 2
+
+Nothing in the keywords changed. The registry gained slots and ways, the
+validator gained a check, and six findings were recorded that the format cannot
+express yet. The findings are in the manifests' `unknown` lists; the three worth
+repeating here are at the end.
+
+### The validator now checks ways against the registry
+
+`manifests/aegis-instance-journal.yaml` said `via: custom-frame` on
+`journal.dungeon`, where the registry lists `standalone-frame`. It validated
+cleanly, because nothing compared the two. `tools/validate.py` gained
+`check_ways`, and running it found four real errors in manifests that had
+already been accepted - including two in `classicuiforever.yaml` from bundle 1.
+`examples/invalid/way-not-in-registry.yaml` now holds the case.
+
+The way decides collisions in SPEC.md 6.1, so an unlisted way was an unchecked
+claim. This is the second time a new check found errors in finished work; the
+first was the hierarchy rule in 0.2.
+
+### New slots
+
+- `keybinding` - Aegis Instance Journal claims Shift-J at load when the player
+  has no binding yet (`Core/Init.lua:51 SetBinding`). Two addons reaching for
+  the same key is a conflict no interface slot described.
+  ForeverDungeonJournal reaches the same end through `Bindings.xml`, which is
+  the quieter way; the registry cannot yet tell the two apart.
+- `trainer.frame`, `trainer.list` - What's Training? adds rows to the class
+  trainer window (`Forever/Views.lua:1`), and SkillUp Forever reads it
+  (`Integrations/Trainer.lua:1`).
+
+### New ways
+
+- `embedded-copy` on `map.pins` and `minimap.pins` - Questie embeds
+  `HereBeDragonsQuestie-2.0`, a renamed HereBeDragons, so its pin pool is its
+  own (`Questie/Modules/Map/QuestieMap.lua:53`). Naming each renamed copy as a
+  way of its own would need a registry entry per library, so the way is general
+  and the library goes in the entry's note.
+- `retexture` on `minimap.layout`, `chat.frame`, `profession.frame`,
+  `spellbook.frame` - ClassicUI Forever retextures all four. The registry was
+  simply too narrow, which only became visible once ways were checked.
+- `bundled` on `audio.sound` - Spoken ships pre-generated audio files and never
+  calls SpeakText (`Spoken/SoundUtils.lua:120 PlaySoundFile`).
+- `LibDataBroker` on `minimap.button` - What's Training? registers a broker
+  object and leaves the button to a display addon (`Broker.lua:1`).
+- `custom-overlay` on `minimap.pins` and `profession.sidebar` - War Effort draws
+  on its own minimap layer (`MinimapEdge.lua:2`), SkillUp Forever overlays the
+  professions window (`UI/DetailsBar.lua:1`).
+
+### Corrected while doing this
+
+`data.zones`, `data.quests` and `data.items` briefly listed `HereBeDragons`
+among their ways, because a broad search-and-replace for the new
+`embedded-copy` way matched every slot whose ways ended in `HereBeDragons]`.
+`check_ways` caught it on the next run.
+
+### Three findings the format cannot express
+
+1. **Extending another addon's slot.** Spoken writes rows into DialogueUI's
+   settings window (`Spoken/API.lua:258 DialogueUIOptions:Add`) and buttons onto
+   its dialogs (`API.lua:178`). The slot belongs to DialogueUI; SPEC.md 3.4
+   rightly forbids providing it, and no other keyword fits. Candidate for 0.3:
+   an `Extends` keyword naming a foreign namespaced slot, silent when the host
+   is absent.
+2. **The .toc already does several of these jobs.** Spoken's data packages
+   carry `Group`, `X-Part-Of` and `X-Child-Of`, which is the family relation
+   that forced a collective manifest. What's Training? gates its dependencies
+   per client with `[AllowLoadGameType camelot][ExcludeLoadGameType classic]`,
+   which the client enforces and which the format's own `interface` narrowing
+   duplicates and can contradict. SkillUp Forever declares `X-License`, the
+   single most useful field for the quality guide, which the format lacks.
+   0.3 should read these rather than invent parallels.
+3. **Enabled is not loaded.** Spoken's audio packages are `LoadOnDemand` and
+   say so in their own notes: it is fine for them to appear disabled or out of
+   date, because Spoken loads them anyway. Every verdict rule in SPEC.md 6
+   assumes installed-and-enabled means active. The phase 5 checker must report
+   what is loaded, not what is ticked.

@@ -1,0 +1,59 @@
+# Hand-written manifest, phase 2, format 2. Read against What's Training? 11.0.0.
+format: 2
+addon: WhatsTraining
+toc: WhatsTraining.toc
+versions: ">=11.0.0"
+interface: [16001]
+title: What's Training?
+notes: Shows which spells are available at the class trainer.
+
+provides:
+  - slot: spellbook.tab
+    aspect: content
+    via: native
+    kind: add
+    source: "WhatsTraining/Forever/SpellBook.lua:1"
+    reason: >
+      A tab in the spellbook listing what the trainer offers. ClassicUI Forever
+      restyles spellbook.frame (aspect style) and does not touch the tabs, so
+      the two are compatible.
+
+  - slot: trainer.list
+    aspect: content
+    via: native
+    kind: add
+    source: "WhatsTraining/Forever/Views.lua:1"
+
+  - slot: minimap.button
+    aspect: content
+    via: LibDataBroker
+    kind: add
+    source: "WhatsTraining/Broker.lua:1"
+    note: A broker object; whether a button appears depends on the display addon.
+
+recommends:
+  - addon: ClassTrainerPlusForever
+    source: "WhatsTraining/WhatsTraining.toc:5 OptionalDeps [AllowLoadGameType camelot]"
+  - addon: EllesmereUI
+    source: "WhatsTraining/WhatsTraining.toc:5 OptionalDeps [AllowLoadGameType camelot]"
+  - addon: TomTom
+    source: "WhatsTraining/WhatsTraining.toc:5 OptionalDeps [AllowLoadGameType camelot]"
+
+unknown:
+  - >
+    The client already has the conditional this format reinvented. The .toc
+    carries two OptionalDeps lines, each gated:
+    '[AllowLoadGameType classic][ExcludeLoadGameType camelot]' names
+    ClassTrainerPlus and TomTom, while
+    '[AllowLoadGameType camelot][ExcludeLoadGameType classic]' names
+    ClassTrainerPlusForever, EllesmereUI, EllesmereUIBlizzardSkin and TomTom.
+    So dependencies can already differ per client, in the .toc, with the client
+    enforcing it - and 'camelot' turns out to be Forever's game type name, which
+    nothing in this project knew. The format's per-entry 'interface' narrowing
+    does the same job by a different means and can disagree with the .toc. Read
+    the gates instead.
+  - >
+    Only the Forever branch of this addon was read, and the manifest covers one
+    .toc that serves several clients through those gates. An entry true on
+    camelot may be false on classic, and this manifest does not say which lines
+    were checked where.

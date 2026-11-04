@@ -1,0 +1,81 @@
+# Hand-written manifest, phase 2, format 2. One manifest for the thirteen Spoken
+# data packages, as agreed for phase 2: individually they are data, and they
+# occupy no slot until Spoken loads them.
+#
+#   Spoken_Quests, Spoken_Bosses, Spoken_Places, Spoken_Readables
+#     the text and metadata modules
+#   SpokenAll_deDE, SpokenBossesAudio_deDE, SpokenPlacesAudio_deDE,
+#   SpokenQuestsAudioAlliance_deDE, SpokenQuestsAudioGossip_deDE,
+#   SpokenQuestsAudioHorde_deDE, SpokenQuestsAudioShared_deDE,
+#   SpokenReadablesAudio_deDE
+#     the German audio, LoadOnDemand
+#   SpokenContributions
+#     player-contributed lines
+#
+# These folders already carry the family metadata this format was about to
+# invent: Group, X-Part-Of and X-Child-Of. See the unknown list.
+format: 2
+addon: Spoken_Quests
+toc: Spoken_Quests.toc
+versions: ">=3.8.0"
+interface: [16001]
+title: Spoken data packages
+
+provides:
+  - slot: data.zones
+    aspect: content
+    via: bundled
+    kind: add
+    source: "Spoken_Places/Spoken_Places.toc:1"
+    note: Place names, read through Spoken's queue.
+
+  - slot: audio.sound
+    aspect: content
+    via: bundled
+    kind: add
+    source: "SpokenQuestsAudioShared_deDE/SpokenQuestsAudioShared_deDE.toc:4 Narrated quests and gossip from the Vanilla era"
+    reason: >
+      The audio itself. Additive and shared: every package plays through
+      Spoken's single queue (Spoken/SoundQueue.lua:31), so thirteen packages are
+      one occupant of the slot, not thirteen.
+
+depends:
+  - addon: Spoken
+    source: "Spoken_Quests/Spoken_Quests.toc:7 Dependencies: Spoken"
+
+recommends:
+  - addon: DialogueUI
+    source: "Spoken_Quests/Spoken_Quests.toc:8 OptionalDeps: DialogueUI, Immersion"
+
+unknown:
+  - >
+    The format cannot say "this manifest covers thirteen folders", and the
+    schema was right to refuse the attempt. A 'collective: true' field was
+    tried here and rejected as an unknown property, which is the validator
+    doing its job: the field is not in SPEC.md. So this manifest claims to
+    describe Spoken_Quests while actually describing twelve more folders, and
+    nothing in it marks that. The honest options for v0.3 are to read the
+    existing TOC family fields (below), or to require one manifest per folder
+    and accept twelve near-identical files.
+  - >
+    The family metadata this format needs already exists as a TOC convention,
+    and Spoken uses it. Spoken_Quests declares 'Group: Spoken' and
+    'X-Part-Of: Spoken'; each audio package adds
+    'X-Child-Of: Spoken_Quests'. That is exactly the "these folders are one
+    addon" relation that made a collective manifest necessary, expressed in the
+    .toc and readable without any manifest at all. Better Addons should read
+    these fields rather than invent a parallel 'collective: true' - and the
+    field used here should be considered a stopgap.
+  - >
+    A package can be switched off and still be loaded. The audio .tocs say it
+    outright: "It's OK for this addon to appear disabled or out of date, it's
+    compatible with any client and Spoken Quests will load it even if it's
+    disabled or out of date" (LoadOnDemand: 1). Every verdict rule in SPEC.md 6
+    assumes installed-and-enabled equals active. Here a disabled addon occupies
+    a slot, and an enabled one may not yet. The checker addon in phase 5 will
+    have to report what is loaded, not what is ticked.
+  - >
+    One .toc, three clients: 'Interface: 11509, 20506, 16001'. The format's
+    rule of one manifest per .toc with per-entry interface narrowing assumes a
+    .toc names one client. Here the package deliberately covers all of them,
+    which is why it is allowed to look out of date.

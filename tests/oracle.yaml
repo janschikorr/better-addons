@@ -146,7 +146,23 @@ pairs:
     result: null
 
   - pair: [DialogueUI, Spoken]
-    verdict: open
+    verdict: compatible
+    why: >
+      Settled by reading the code, and the pair is mutually integrated rather
+      than merely tolerant. DialogueUI publishes a documented provider contract
+      for voiceover addons (Code/SupportedAddOns/VoiceoverPublic.lua:1: name,
+      doesFileExist, playFile, for quest detail/progress/completion and
+      gossip). Spoken puts a Play/Skip/Report row on DialogueUI's dialogs
+      (Spoken/API.lua:178), adds its own rows to DialogueUI's settings
+      (API.lua:258) and follows its parchment-or-dark theme as it changes
+      (Core.lua:38), all guarded so the rows stay on Spoken's own window when
+      DialogueUI is absent.
+    observe: >
+      Accept a quest with both loaded: DialogueUI's window with Spoken's row in
+      it, the line read aloud once and not twice, and Spoken's settings present
+      inside DialogueUI's panel.
+    result: null
+    was: open
     why: DialogueUI replaces the quest frame, Spoken speaks when it opens.
     observe: Narration starts inside the DialogueUI frame too.
     result: null
@@ -193,6 +209,37 @@ pairs:
     observe: >
       Which tracker is visible, whether the other is empty or hidden, and
       whether quest lines appear in only one of them.
+    result: null
+
+  - pair: [Aegis_Forever_Instance_Journal, ForeverDungeonJournal]
+    verdict: compatible
+    risk: duplication
+    why: >
+      Found by writing the manifests. Both provide journal.dungeon as added
+      content in their own standalone frame, so no rule fires and the verdict
+      is compatible - correctly. The player nonetheless has two dungeon
+      journals, two copies of the loot data in memory and two places to look.
+      Both also claim the keybinding slot, by opposite means: Aegis calls
+      SetBinding at load when no binding exists (Core/Init.lua:51), while
+      DungeonJournal declares one in Bindings.xml for the player to assign.
+    observe: >
+      Which key opens which journal on a fresh profile, whether Aegis's
+      automatic Shift-J lands on an action DungeonJournal also wanted, and
+      whether both windows can be open at once.
+    result: null
+
+  - pair: [Spoken, Forever_TTS]
+    verdict: compatible
+    why: >
+      Corrects an assumption from the first draft, where this pair looked like
+      two narrators fighting over one voice. Spoken never calls SpeakText: every
+      line is a pre-generated file through PlaySoundFile
+      (Spoken/SoundUtils.lua:120), so it occupies audio.sound and not audio.tts.
+      Forever_TTS holds audio.tts alone.
+    observe: >
+      With both loaded, does a quest produce one narration or two overlapping
+      ones? Requires Forever_TTS, which is not installed.
+    needs: Forever_TTS
     result: null
 
 # Phase 7 step 1 is not a pair but a precondition:

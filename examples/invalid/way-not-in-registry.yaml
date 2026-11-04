@@ -1,0 +1,18 @@
+# Must be rejected: the way is not one the registry lists for that slot.
+#
+# This is the case that slipped through bundle 3 unnoticed - 'custom-frame'
+# instead of the registry's 'standalone-frame' - until tools/validate.py gained
+# check_ways. The way decides collisions, so an unlisted way is an unchecked
+# claim about how the slot is occupied.
+format: 2
+addon: ExampleAddon
+toc: ExampleAddon.toc
+interface: [16001]
+title: Example
+
+provides:
+  - slot: journal.dungeon
+    aspect: content
+    via: custom-frame
+    kind: add
+    source: "ExampleAddon/Core.lua:1"

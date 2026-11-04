@@ -1,0 +1,70 @@
+# Hand-written manifest, phase 2, format 2. Read against Spoken 3.8.0, the
+# controlling addon of a family of fourteen folders (one manifest for the
+# thirteen data packages lives in spoken-data-packages.yaml).
+format: 2
+addon: Spoken
+toc: Spoken.toc
+versions: ">=3.8.0"
+interface: [16001]
+title: Spoken
+notes: >
+  Reads the game aloud: quests, gossip, places and readables. One queue, one
+  narrator, one minimap button.
+
+provides:
+  - slot: audio.sound
+    aspect: content
+    via: bundled
+    kind: add
+    source: "Spoken/SoundUtils.lua:120 PlaySoundFile(clip)"
+    reason: >
+      Pre-generated audio files played through PlaySoundFile, not the client's
+      text-to-speech. Spoken never calls SpeakText, so it does not occupy
+      audio.tts and does not contend with Forever_TTS for the narrator voice -
+      which is the opposite of what the addon's description suggests.
+
+  - slot: minimap.button
+    aspect: content
+    via: LibDBIcon
+    kind: add
+    source: "Spoken/Core.lua:112 LibDBIcon = { showInCompartment = true }"
+
+  - slot: spoken:queue
+    aspect: content
+    kind: add
+    source: "Spoken/SoundQueue.lua:31"
+    note: One queue and one narrator, shared by every data package.
+
+  - slot: spoken:api
+    aspect: content
+    kind: add
+    source: "Spoken/API.lua:1"
+
+recommends:
+  - addon: DialogueUI
+    note: >
+      Adds a Play / Skip / Report row to DialogueUI's dialogs
+      (API.lua:178 CreateDialogueUIRow), puts its own rows into DialogueUI's
+      settings (API.lua:258 DialogueUIOptions:Add) and follows DialogueUI's
+      parchment-or-dark theme as it changes (Core.lua:38). Guarded on the field,
+      so without DialogueUI the rows stay on Spoken's own window.
+    source: "Spoken/API.lua:255"
+
+unknown:
+  - >
+    The format has no word for extending another addon's slot. Spoken writes
+    rows into DialogueUI's settings window (API.lua:258) and buttons onto
+    DialogueUI's dialogs (API.lua:178). The slot dialogueui:settings belongs to
+    DialogueUI, and SPEC.md 3.4 says only the owning addon may provide a
+    namespaced slot - correctly, because Spoken does not own it. But Provides,
+    Depends, Recommends, Breaks and Clashes cannot say "adds content to that
+    addon's slot" either. Candidate for v0.3: an Extends keyword, naming a
+    foreign namespaced slot, which reports nothing when the host is absent and
+    needs no agreement from the host's own manifest.
+  - >
+    Spoken's slot picture contradicts its own description, and only reading the
+    code settles it. "Reads the game aloud" sounds like audio.tts via SpeakText;
+    in fact every line is a pre-generated file through PlaySoundFile. A tool
+    that guessed the slot from the .toc Notes would get this wrong, and so would
+    a reviewer. Worth a rule in the quality guide: the way is a claim about the
+    code, and only the code can support it.

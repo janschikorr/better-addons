@@ -33,7 +33,7 @@ provides:
 
   - slot: map.pins
     aspect: content
-    via: HereBeDragonsQuestie
+    via: embedded-copy
     kind: add
     optional: true
     module: enableMapIcons
@@ -41,12 +41,14 @@ provides:
     reason: >
       Not the shared HereBeDragons: Questie embeds a renamed copy,
       HereBeDragonsQuestie-2.0, so its pin pool and template are its own
-      (QuestieMap.lua:53-54). That makes it a different way from
-      map.pins=HereBeDragons, and the two do not contend for the same pool.
+      (QuestieMap.lua:53-54). Recorded as the general way embedded-copy, which
+      the registry gained for this case - naming each renamed copy as its own
+      way would need a registry entry per library. An embedded copy never
+      contends with the shared library's pool.
 
   - slot: minimap.pins
     aspect: content
-    via: HereBeDragonsQuestie
+    via: embedded-copy
     kind: add
     optional: true
     module: enableMiniMapIcons
@@ -161,7 +163,7 @@ unknown:
     Embedded, renamed library copies are a way, a dependency and a quality
     question at once, and the format only captures the first. Questie ships
     HereBeDragonsQuestie-2.0, a renamed HereBeDragons, so it never contends
-    with another addon's copy. Recording it as via: HereBeDragonsQuestie gives
+    with another addon's copy. Recording it as via: embedded-copy gives
     the right verdict, but nothing states that this is HereBeDragons 2.0 under
     another name - so a tool cannot tell that Questie satisfies a
     'Depends: HereBeDragons' from a third addon, nor that the embedded copy
