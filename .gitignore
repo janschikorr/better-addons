@@ -1,0 +1,7 @@
+_site/
+__pycache__/
+*.pyc
+.venv/
+tests/results/*.txt
+tests/results/*.json
+!tests/results/.gitkeep

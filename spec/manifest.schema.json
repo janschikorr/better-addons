@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://janschikorr.github.io/better-addons/spec/manifest.schema.json",
+  "title": "Better Addons manifest",
+  "description": "A manifest describes which interface slots one .toc of an addon occupies, and how the addon relates to other addons. See spec/SPEC.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "addon"],
+  "properties": {
+    "format": {
+      "description": "Manifest format version. Tools reject a value they do not know rather than misreading the file.",
+      "type": "integer",
+      "const": 1
+    },
+    "addon": {
+      "description": "Addon folder name, as it appears in Interface/AddOns.",
+      "$ref": "#/$defs/addonName"
+    },
+    "toc": {
+      "description": "The .toc file this manifest applies to. One manifest per .toc.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+\\.toc$"
+    },
+    "versions": {
+      "description": "Addon versions this manifest is valid for, as a version constraint.",
+      "$ref": "#/$defs/versionConstraint"
+    },
+    "interface": {
+      "description": "Interface numbers from the .toc that this manifest was derived from.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "integer", "minimum": 10000 }
+    },
+    "title": { "type": "string", "minLength": 1 },
+    "notes": { "type": "string" },
+    "unknown": {
+      "description": "Statements that could not be expressed in this format version. Feeds the gap list for v0.2.",
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "provides": {
+      "description": "Slots this addon occupies.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/provide" }
+    },
+    "depends": {
+      "description": "Addons or slots that must be present. Unmet entries make the addon incompatible.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/requirement" }
+    },
+    "recommends": {
+      "description": "Addons or slots that improve this addon. Unmet entries are notes only.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/requirement" }
+    },
+    "breaks": {
+      "description": "Addons that must not run alongside this one. Always a conflict.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/break" }
+    },
+    "modules": {
+      "description": "Modules referenced by optional ('?') entries, with the key the addon reports in BetterAddons_Active.",
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/slotName" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "default": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "addonName": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$"
+    },
+    "slotName": {
+      "description": "Lowercase dotted slot name, optionally namespaced with '<addon>:'.",
+      "type": "string",
+      "pattern": "^([a-z0-9_]+:)?[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*)*$"
+    },
+    "versionConstraint": {
+      "description": "Debian-style version constraint, e.g. '>=2.0', '<3.0', '=1.4.2'.",
+      "type": "string",
+      "pattern": "^(<<|<=|=|>=|>>|<|>)[0-9][0-9A-Za-z.+~-]*$"
+    },
+    "way": {
+      "description": "How the slot is occupied. 'native' means through the game API directly.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*$"
+    },
+    "source": {
+      "description": "Where this statement was read from, as 'path/file.lua:line' with an optional hint.",
+      "type": "string",
+      "pattern": "^[^\\s:]+:[0-9]+( .+)?$"
+    },
+    "provide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot"],
+      "properties": {
+        "slot": { "$ref": "#/$defs/slotName" },
+        "via": { "$ref": "#/$defs/way" },
+        "via_version": { "$ref": "#/$defs/versionConstraint" },
+        "kind": {
+          "description": "Interaction kind, see SPEC.md section 4.",
+          "enum": ["replace", "hook", "add", "modify"]
+        },
+        "optional": {
+          "description": "True for '?' entries: applies only while the module is enabled.",
+          "type": "boolean"
+        },
+        "module": {
+          "description": "Key in BetterAddons_Active that switches this entry on.",
+          "type": "string",
+          "minLength": 1
+        },
+        "source": { "$ref": "#/$defs/source" },
+        "note": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "description": "via_version requires via.",
+          "if": { "required": ["via_version"] },
+          "then": { "required": ["via"] }
+        },
+        {
+          "description": "module requires optional: true.",
+          "if": { "required": ["module"] },
+          "then": { "properties": { "optional": { "const": true } }, "required": ["optional"] }
+        }
+      ]
+    },
+    "requirement": {
+      "description": "Either an addon name with an optional version, or a slot name. Shorthand: a plain string.",
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["addon"],
+          "properties": {
+            "addon": { "$ref": "#/$defs/addonName" },
+            "version": { "$ref": "#/$defs/versionConstraint" },
+            "source": { "$ref": "#/$defs/source" },
+            "note": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["slot"],
+          "properties": {
+            "slot": { "$ref": "#/$defs/slotName" },
+            "via": { "$ref": "#/$defs/way" },
+            "via_version": { "$ref": "#/$defs/versionConstraint" },
+            "source": { "$ref": "#/$defs/source" },
+            "note": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "break": {
+      "oneOf": [
+        { "$ref": "#/$defs/addonName" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["addon"],
+          "properties": {
+            "addon": { "$ref": "#/$defs/addonName" },
+            "version": { "$ref": "#/$defs/versionConstraint" },
+            "reason": { "type": "string" },
+            "source": { "$ref": "#/$defs/source" }
+          }
+        }
+      ]
+    }
+  }
+}

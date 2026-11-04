@@ -1,0 +1,5 @@
+# Rejected: slot names are lowercase dotted segments.
+format: 1
+addon: OpenMap
+provides:
+  - slot: Map.Window

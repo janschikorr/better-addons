@@ -1,0 +1,135 @@
+# Better Addons - test oracle
+#
+# For every critical pair, the expected verdict is written down BEFORE the test
+# runs. Only then is a match evidence rather than hindsight.
+#
+# verdict: conflict | incompatible | compatible | open
+#   "open" means the code decides, in phase 2. Every row must carry a fixed
+#   verdict before phase 7 (in-game testing) starts.
+#
+# Fields:
+#   pair      the two (or more) addons involved
+#   verdict   the prediction
+#   why       the reason, in one sentence
+#   observe   what to look at in the game to confirm or refute it
+#   result    filled in during phase 7: confirmed | deviated, plus a note
+
+format: 1
+version: "0.1"
+
+addons:
+  under_test:
+    - OpenMap
+    - Questie
+    - Overlord_Forever
+    - DFL_DungeonJournal
+    - ShortestPathForever
+    - ClassicUI_Forever
+    - DialogueUI
+    - Spoken
+    - SkillUpForever
+    - WhatsTraining_Forever
+  controls:
+    - addon: Leatrix_Maps
+      role: conflict control
+      why: Claims the world map frame like OpenMap; OpenMap warns about it itself.
+    - addon: Forever_TTS
+      role: duplicate-function control
+      why: Reads quests aloud like Spoken.
+  tooling:
+    - BugGrabber
+    - BugSack
+
+pairs:
+  - pair: [OpenMap, Leatrix_Maps]
+    verdict: conflict
+    why: Both claim the world map frame.
+    observe: Warning appears; after choosing one, only a single map is active.
+    result: null
+
+  - pair: [Spoken, Forever_TTS]
+    verdict: conflict
+    why: Both read quests aloud.
+    observe: Warning appears; without a choice, both speak at once.
+    result: null
+
+  - pair: [OpenMap, Questie]
+    verdict: compatible
+    why: OpenMap displays Questie pins deliberately.
+    observe: Quest icons visible on the OpenMap canvas.
+    result: null
+
+  - pair: [OpenMap, Overlord_Forever]
+    verdict: open
+    why: Depends on how Overlord places its pins.
+    observe: Fronts and conquest circles on the OpenMap canvas.
+    result: null
+
+  - pair: [OpenMap, DFL_DungeonJournal]
+    verdict: open
+    why: Entrance pins, way not yet known.
+    observe: Dungeon entrances on the OpenMap canvas.
+    result: null
+
+  - pair: [OpenMap, ShortestPathForever]
+    verdict: open
+    why: The route is drawn onto the map, way not yet known.
+    observe: Route visible on the OpenMap canvas.
+    result: null
+
+  - pair: [Questie, ShortestPathForever]
+    verdict: open
+    why: Both write into the objective tracker.
+    observe: Both sets of lines present in the tracker, nothing hidden.
+    result: null
+
+  - pair: [Questie, DFL_DungeonJournal]
+    verdict: compatible
+    why: Both supply quest data; neither owns a slot exclusively.
+    observe: Tracker and journal both show their content.
+    result: null
+
+  - pair: [DialogueUI, Spoken]
+    verdict: open
+    why: DialogueUI replaces the quest frame, Spoken speaks when it opens.
+    observe: Narration starts inside the DialogueUI frame too.
+    result: null
+
+  - pair: [ClassicUI_Forever, Questie]
+    verdict: compatible
+    why: ClassicUI styles the minimap, Questie only places pins.
+    observe: Pins visible on the Classic minimap.
+    result: null
+
+  - pair: [ClassicUI_Forever, Overlord_Forever]
+    verdict: compatible
+    why: ClassicUI styles the minimap, Overlord only places pins.
+    observe: Pins visible on the Classic minimap.
+    result: null
+
+  - pair: [ClassicUI_Forever, ShortestPathForever]
+    verdict: compatible
+    why: ClassicUI styles the minimap, Shortest Path only places pins.
+    observe: Pins visible on the Classic minimap.
+    result: null
+
+  - pair: [ClassicUI_Forever, WhatsTraining_Forever]
+    verdict: compatible
+    why: Extra button on the spellbook, no claim on the frame itself.
+    observe: Button visible and clickable.
+    result: null
+
+  - pair: [ClassicUI_Forever, SkillUpForever]
+    verdict: compatible
+    why: Sidebar inside the profession frame.
+    observe: Skill-up values and sidebar visible.
+    result: null
+
+# Phase 7 step 1 is not a pair but a precondition:
+preconditions:
+  - name: saved variables survive logout
+    why: >
+      A bug seen in the beta. It decides whether the checker addon can persist
+      the choices the player makes.
+    observe: Set an option, log out, log back in, option is still set.
+    result: null

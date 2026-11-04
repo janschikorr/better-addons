@@ -1,0 +1,19 @@
+# Shorthand form: depends/recommends/breaks as plain strings.
+format: 1
+addon: Spoken
+toc: Spoken.toc
+provides:
+  - slot: audio.tts
+    via: SpeakText
+    kind: add
+    source: "Spoken/Speech.lua:120"
+  - slot: quest.detail
+    kind: hook
+    source: "Spoken/Quest.lua:31"
+depends:
+  - quest.objectives
+recommends:
+  - DialogueUI
+  - Questie
+breaks:
+  - Forever_TTS

@@ -1,0 +1,34 @@
+# Configuration for tools/build-site.py
+title: Better Addons
+tagline: Make it visible what an addon occupies - and keep addons honest.
+repo: https://github.com/janschikorr/better-addons
+base: /better-addons
+
+# Pages built from Markdown sources. Order is the order of the navigation.
+pages:
+  - slug: index
+    nav: Home
+    title: Better Addons
+    source: site/content/index.md
+  - slug: compatibility
+    nav: Compatibility
+    title: Compatibility overview
+    source: site/content/compatibility.md
+    include: compatibility
+  - slug: slots
+    nav: Slot registry
+    title: Slot registry
+    source: site/content/slots.md
+    include: slots
+  - slug: spec
+    nav: Specification
+    title: Manifest specification
+    source: spec/SPEC.md
+  - slug: developers
+    nav: For developers
+    title: For developers
+    source: site/content/developers.md
+  - slug: quality
+    nav: Quality guide
+    title: Quality guide
+    source: guides/quality.md

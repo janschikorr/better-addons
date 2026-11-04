@@ -1,0 +1,342 @@
+# Better Addons - slot registry
+#
+# Version 0.1. Deliberately limited to the slots touched by the thirteen test
+# addons, plus console variables (CVars), audio and automation actions.
+# The registry grows after phase 2 (hand-written manifests).
+#
+# Fields per slot:
+#   area        interface area, used for grouping on the info site
+#   title       short label
+#   exclusive   true  = only one addon can occupy it meaningfully
+#               false = additive, several addons possible
+#   ways        known ways (slot=way). "native" means: straight through the
+#               game API, without a library.
+#   note        what the slot stands for, and how a conflict becomes visible
+
+format: 1
+version: "0.1"
+
+areas:
+  map: World map
+  minimap: Minimap
+  quest: Quests and dialogue
+  tooltip: Tooltips
+  spellbook: Spellbook and talents
+  profession: Professions
+  journal: Reference frames
+  ui: Overall interface
+  chat: Chat
+  audio: Audio output
+  cvar: Console variables
+  auto: Automation actions
+  data: Data sources
+
+slots:
+
+  # ---------------------------------------------------------------- World map
+  map.window:
+    area: map
+    title: World map frame
+    exclusive: true
+    ways: [native, replace-frame]
+    note: >
+      Who owns the map frame: size, border, zoom behaviour, and whether the
+      Blizzard map is used at all. Two providers means one map fails to open,
+      flickers, or sits behind the other.
+
+  map.pins:
+    area: map
+    title: Pins on the world map
+    exclusive: false
+    ways: [native, HereBeDragons, custom-overlay]
+    note: >
+      Quest, gathering and target pins. Additive as long as everyone uses the
+      same way. A custom overlay on top of a foreign map drifts if that map
+      computes coordinates differently.
+
+  map.route:
+    area: map
+    title: Routes drawn on the map
+    exclusive: false
+    ways: [native, HereBeDragons, custom-overlay]
+    note: Lines and paths drawn between points.
+
+  map.filter:
+    area: map
+    title: Map filter bar
+    exclusive: false
+    ways: [native]
+    note: Extra checkboxes and dropdowns on the map edge.
+
+  map.legend:
+    area: map
+    title: Legend and labels
+    exclusive: false
+    ways: [native]
+
+  # ------------------------------------------------------------------ Minimap
+  minimap.layout:
+    area: minimap
+    title: Minimap shape and position
+    exclusive: true
+    ways: [native, replace-frame]
+    note: >
+      Shape, size, position, border and button ring. Two providers means
+      displaced or duplicated buttons.
+
+  minimap.pins:
+    area: minimap
+    title: Pins on the minimap
+    exclusive: false
+    ways: [native, HereBeDragons]
+
+  minimap.button:
+    area: minimap
+    title: Button on the minimap ring
+    exclusive: false
+    ways: [native, LibDBIcon]
+    note: Additive, but every button costs space. A common source of slop.
+
+  # ------------------------------------------------------- Quests, dialogue
+  quest.tracker:
+    area: quest
+    title: Objective tracker frame
+    exclusive: true
+    ways: [native, replace-frame]
+    note: >
+      Who owns the tracker frame itself. Addons that only write lines into it
+      occupy quest.tracker.lines instead.
+
+  quest.tracker.lines:
+    area: quest
+    title: Lines inside the objective tracker
+    exclusive: false
+    ways: [native, custom-block]
+    note: >
+      Extra lines and blocks. Additive, but with limited height the blocks
+      push each other out of view.
+
+  quest.detail:
+    area: quest
+    title: Quest frame (accept and turn in)
+    exclusive: true
+    ways: [native, replace-frame]
+    note: >
+      The frame holding quest text. Whoever replaces it must keep the events
+      readable, or text-to-speech addons go silent.
+
+  quest.gossip:
+    area: quest
+    title: Gossip frame
+    exclusive: true
+    ways: [native, replace-frame]
+
+  quest.log:
+    area: quest
+    title: Quest log
+    exclusive: true
+    ways: [native, replace-frame]
+
+  quest.objectives:
+    area: quest
+    title: Quest objective data
+    exclusive: false
+    ways: [native]
+    note: Reading objectives and offering them to other addons.
+
+  # ------------------------------------------------------------------ Tooltips
+  tooltip.lines:
+    area: tooltip
+    title: Extra tooltip lines
+    exclusive: false
+    ways: [native, TooltipDataProcessor]
+
+  # ----------------------------------------- Spellbook, talents, professions
+  spellbook.frame:
+    area: spellbook
+    title: Spellbook frame
+    exclusive: true
+    ways: [native, replace-frame]
+
+  spellbook.tab:
+    area: spellbook
+    title: Extra tab or button on the spellbook
+    exclusive: false
+    ways: [native]
+
+  profession.frame:
+    area: profession
+    title: Profession frame
+    exclusive: true
+    ways: [native, replace-frame]
+
+  profession.sidebar:
+    area: profession
+    title: Sidebar in the profession frame
+    exclusive: false
+    ways: [native]
+
+  profession.recipe.lines:
+    area: profession
+    title: Extra information on recipes
+    exclusive: false
+    ways: [native]
+    note: For example colouring by skill-up chance.
+
+  # --------------------------------------------------------- Reference frames
+  journal.dungeon:
+    area: journal
+    title: Dungeon journal
+    exclusive: true
+    ways: [native, standalone-frame]
+    note: >
+      A standalone frame, or a replacement for Blizzard's journal. Several
+      standalone journals are not a technical conflict, but they are duplicated
+      effort - exactly what the slot registry is meant to make visible.
+
+  journal.dungeon.pins:
+    area: journal
+    title: Dungeon entrances on the map
+    exclusive: false
+    ways: [native, HereBeDragons]
+
+  # ------------------------------------------------------ Overall interface
+  ui.skin:
+    area: ui
+    title: Overall look of the interface
+    exclusive: true
+    ways: [replace-frame, retexture]
+    note: >
+      Addons that own the entire appearance. Two of them are always a conflict.
+      Pins and extra buttons from other addons stay compatible as long as they
+      do not claim this slot themselves.
+
+  ui.unitframe.player:
+    area: ui
+    title: Player frame
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+
+  ui.unitframe.target:
+    area: ui
+    title: Target frame
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+
+  ui.actionbar.layout:
+    area: ui
+    title: Action bar layout
+    exclusive: true
+    ways: [native, replace-frame, retexture]
+
+  chat.frame:
+    area: chat
+    title: Chat frame
+    exclusive: true
+    ways: [native, replace-frame]
+
+  chat.message:
+    area: chat
+    title: Filtering or extending chat messages
+    exclusive: false
+    ways: [native]
+
+  # -------------------------------------------------------------------- Audio
+  audio.tts:
+    area: audio
+    title: Speaking text aloud
+    exclusive: true
+    ways: [native, SpeakText]
+    note: >
+      Reading quest and gossip text aloud. Two providers talk at the same time -
+      audible and unambiguous, which is why it is one of the negative controls.
+
+  audio.sound:
+    area: audio
+    title: Additional sounds
+    exclusive: false
+    ways: [native]
+
+  audio.mute:
+    area: audio
+    title: Muting game sounds
+    exclusive: false
+    ways: [MuteSoundFile]
+    note: Additive, but two addons can undo each other when unmuting.
+
+  # ------------------------------------------------------- Console variables
+  cvar.nameplate:
+    area: cvar
+    title: Nameplate settings
+    exclusive: true
+    ways: [SetCVar]
+    note: >
+      CVars are global. Two addons writing the same CVar overwrite each other on
+      every load, so the resulting state depends on load order.
+
+  cvar.camera:
+    area: cvar
+    title: Camera settings
+    exclusive: true
+    ways: [SetCVar]
+
+  cvar.map:
+    area: cvar
+    title: Map settings
+    exclusive: true
+    ways: [SetCVar]
+
+  cvar.audio:
+    area: cvar
+    title: Sound settings
+    exclusive: true
+    ways: [SetCVar]
+
+  # -------------------------------------------------------- Automation actions
+  auto.quest.accept:
+    area: auto
+    title: Accepting quests automatically
+    exclusive: true
+    ways: [native]
+    note: >
+      Two addons both accepting produce duplicate calls and skipped dialogue.
+
+  auto.quest.turnin:
+    area: auto
+    title: Turning in quests automatically
+    exclusive: true
+    ways: [native]
+
+  auto.gossip.select:
+    area: auto
+    title: Selecting gossip options automatically
+    exclusive: true
+    ways: [native]
+
+  auto.loot:
+    area: auto
+    title: Automatic looting
+    exclusive: true
+    ways: [native, SetCVar]
+
+  # ------------------------------------------------------------ Data sources
+  data.zones:
+    area: data
+    title: Zone and coordinate data
+    exclusive: false
+    ways: [native, HereBeDragons]
+
+  data.quests:
+    area: data
+    title: Quest database
+    exclusive: false
+    ways: [bundled]
+    note: >
+      Bundled databases. Several are not a conflict, but they duplicate memory
+      and maintenance. Naming source and licence is mandatory.
+
+  data.items:
+    area: data
+    title: Item and recipe data
+    exclusive: false
+    ways: [bundled]

@@ -1,0 +1,34 @@
+# Better Addons - API pattern to slot mapping
+#
+# Status: phase 3 fills this in. The shape is fixed here so the scan script and
+# the hand-written manifests of phase 2 can be compared field by field.
+#
+# Each entry maps a code pattern to a slot and an interaction kind:
+#   match     Lua pattern or regex found in the addon's source
+#   slot      the slot from spec/slots.yaml it implies
+#   kind      replace | hook | add | modify
+#   via       the way, when the pattern determines it
+#   confidence  high | medium | low - low means the scan script reports it as a
+#               question rather than an entry
+#   note      why this pattern implies that slot
+
+format: 1
+version: "0.1"
+
+patterns: []
+
+# Example of the intended shape (not yet active):
+#
+# patterns:
+#   - match: "WorldMapFrame:SetParent"
+#     slot: map.window
+#     kind: replace
+#     via: native
+#     confidence: high
+#     note: Reparenting the map frame means taking ownership of it.
+#
+#   - match: "HereBeDragons:AddWorldMapIconMap"
+#     slot: map.pins
+#     kind: add
+#     via: HereBeDragons
+#     confidence: high

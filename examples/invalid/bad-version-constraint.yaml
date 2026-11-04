@@ -1,0 +1,6 @@
+# Rejected: version constraint needs an operator.
+format: 1
+addon: OpenMap
+breaks:
+  - addon: Mapster
+    version: "3.0"

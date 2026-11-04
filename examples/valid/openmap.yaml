@@ -1,0 +1,44 @@
+# Fictional reference manifest. Values are illustrative, not derived from code.
+format: 1
+addon: OpenMap
+toc: OpenMap.toc
+versions: ">=2.4.0"
+interface: [11507]
+title: OpenMap
+provides:
+  - slot: map.window
+    via: native
+    kind: replace
+    source: "OpenMap/Core.lua:812 WorldMapFrame reparented"
+  - slot: map.pins
+    via: HereBeDragons
+    via_version: ">=2.0"
+    kind: add
+    source: "OpenMap/Pins.lua:44"
+  - slot: map.filter
+    via: native
+    kind: add
+    source: "OpenMap/Filters.lua:17"
+  - slot: openmap:canvas.overlay
+    kind: add
+    note: Offered to other addons for drawing on the canvas.
+  - slot: minimap.layout
+    via: replace-frame
+    kind: replace
+    optional: true
+    module: minimap
+    source: "OpenMap/Minimap.lua:9"
+depends:
+  - slot: data.zones
+    via: HereBeDragons
+recommends:
+  - Questie
+breaks:
+  - addon: Leatrix_Maps
+    reason: Both claim map.window.
+  - addon: Mapster
+    version: "<3.0"
+modules:
+  minimap.layout:
+    title: Minimap restyling
+    default: false

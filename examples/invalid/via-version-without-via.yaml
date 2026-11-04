@@ -1,0 +1,6 @@
+# Rejected: via_version without via.
+format: 1
+addon: OpenMap
+provides:
+  - slot: map.pins
+    via_version: ">=2.0"

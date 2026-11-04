@@ -1,0 +1,6 @@
+# Rejected: 'kind' outside the allowed set.
+format: 1
+addon: OpenMap
+provides:
+  - slot: map.window
+    kind: overwrite
